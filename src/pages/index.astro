@@ -257,11 +257,13 @@ const formatDate = (date: Date) =>
           {projectCategories.map((category, index) => (
             <button
               type="button"
+              role="tab"
+              aria-selected={index === 0 ? 'true' : 'false'}
               data-filter={category}
               class:list={[
                 'project-filter-btn rounded-full border px-3.5 py-1.5 font-mono text-xs transition-all duration-200',
                 index === 0
-                  ? 'border-ink bg-ink text-canvas'
+                  ? 'border-ink bg-ink text-canvas hover:text-canvas'
                   : 'border-rule bg-canvas-elevated/50 text-ink-secondary hover:border-sage hover:text-ink',
               ]}
             >
@@ -546,6 +548,18 @@ const formatDate = (date: Date) =>
               </a>
             </div>
             <div class="flex items-center justify-between border-b border-rule/70 py-2.5">
+              <span class="text-ink-muted">FACEBOOK</span>
+              <a href={PROFILE_DATA.identity.facebook} target="_blank" rel="noopener noreferrer" class="text-ink hover:text-sage editorial-link">
+                facebook.com/ThanhDora ↗
+              </a>
+            </div>
+            <div class="flex items-center justify-between border-b border-rule/70 py-2.5">
+              <span class="text-ink-muted">X (TWITTER)</span>
+              <a href={PROFILE_DATA.identity.x} target="_blank" rel="noopener noreferrer" class="text-ink hover:text-sage editorial-link">
+                x.com/ThanhDora ↗
+              </a>
+            </div>
+            <div class="flex items-center justify-between border-b border-rule/70 py-2.5">
               <span class="text-ink-muted">PRIMARY DOMAIN</span>
               <a href={`https://${PROFILE_DATA.identity.domain}`} target="_blank" rel="noopener noreferrer" class="text-ink hover:text-sage editorial-link">
                 {PROFILE_DATA.identity.domain} ↗
@@ -655,11 +669,25 @@ const formatDate = (date: Date) =>
       const selected = btn.getAttribute('data-filter') || 'All';
 
       filterBtns.forEach((b) => {
-        b.classList.remove('border-ink', 'bg-ink', 'text-canvas');
-        b.classList.add('border-rule', 'bg-canvas-elevated/50', 'text-ink-secondary');
+        b.classList.remove('border-ink', 'bg-ink', 'text-canvas', 'hover:text-canvas');
+        b.classList.add(
+          'border-rule',
+          'bg-canvas-elevated/50',
+          'text-ink-secondary',
+          'hover:border-sage',
+          'hover:text-ink'
+        );
+        b.setAttribute('aria-selected', 'false');
       });
-      btn.classList.add('border-ink', 'bg-ink', 'text-canvas');
-      btn.classList.remove('border-rule', 'bg-canvas-elevated/50', 'text-ink-secondary');
+      btn.classList.remove(
+        'border-rule',
+        'bg-canvas-elevated/50',
+        'text-ink-secondary',
+        'hover:border-sage',
+        'hover:text-ink'
+      );
+      btn.classList.add('border-ink', 'bg-ink', 'text-canvas', 'hover:text-canvas');
+      btn.setAttribute('aria-selected', 'true');
 
       projectCards.forEach((card) => {
         const cardCat = card.getAttribute('data-category');
@@ -675,7 +703,7 @@ const formatDate = (date: Date) =>
   // 2. One-Click Copy Email
   const copyBtn = document.getElementById('copy-email-btn');
   copyBtn?.addEventListener('click', async () => {
-    const email = copyBtn.getAttribute('data-email') || 'contact@thanhdora.site';
+    const email = copyBtn.getAttribute('data-email') || 'thanhdora3605@gmail.com';
     try {
       await navigator.clipboard.writeText(email);
       const original = copyBtn.textContent;
@@ -711,6 +739,6 @@ const formatDate = (date: Date) =>
       feedbackEl.classList.add('text-sage');
     }
 
-    window.location.href = `mailto:contact@thanhdora.site?subject=${subject}&body=${body}`;
+    window.location.href = `mailto:thanhdora3605@gmail.com?subject=${subject}&body=${body}`;
   });
 </script>

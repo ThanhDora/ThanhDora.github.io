@@ -41,7 +41,7 @@ export interface ExperienceItem {
 export const PROFILE_DATA = {
   identity: {
     name: 'Thanh Dora',
-    legalName: 'Lê Thành Đạt',
+    legalName: 'Lê Thanh Đạt',
     monogram: 'TD.',
     handle: '@ThanhDora',
     role: 'Full-Stack Engineer & Systems Architect',
@@ -51,9 +51,10 @@ export const PROFILE_DATA = {
     status: 'Available for select engineering & architecture mandates',
     domain: 'ThanhDora.github.io',
     githubPagesDomain: 'ThanhDora.github.io',
-    email: 'contact@thanhdora.site',
+    email: 'thanhdora3605@gmail.com',
     github: 'https://github.com/ThanhDora',
     linkedin: 'https://linkedin.com/in/thanhdora',
+    facebook: 'https://facebook.com/ThanhDora',
     x: 'https://x.com/ThanhDora',
   },
 
@@ -62,7 +63,7 @@ export const PROFILE_DATA = {
     headlinePrefix: 'Engineering calm,',
     headlineItalic: 'high-leverage systems',
     headlineSuffix: 'where software meets business operations.',
-    lead: 'I am Thanh Dora (Lê Thành Đạt) — a full-stack developer and systems builder specializing in Next.js, Node.js/Express, native iOS, cloud DevOps, and applied AI tooling. I design software that remains fast, legible, and dependable under real-world operational load.',
+    lead: 'I am Thanh Dora (Lê Thanh Đạt) — a full-stack developer and systems builder specializing in Next.js, Node.js/Express, native iOS, cloud DevOps, and applied AI tooling. I design software that remains fast, legible, and dependable under real-world operational load.',
     metrics: [
       { value: '99.95%', label: 'Production Uptime Target', note: 'Self-healing containerized infra' },
       { value: '< 45ms', label: 'Edge API P95 Latency', note: 'Distributed caching & lean runtimes' },

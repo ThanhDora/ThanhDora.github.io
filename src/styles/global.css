@@ -113,6 +113,15 @@
   transform-origin: bottom left;
 }
 
+/* Active filter button safeguard for mobile touch/hover states */
+.project-filter-btn[aria-selected="true"],
+.project-filter-btn[aria-selected="true"]:hover,
+.project-filter-btn[aria-selected="true"]:focus {
+  background-color: rgb(var(--color-ink));
+  border-color: rgb(var(--color-ink));
+  color: rgb(var(--color-canvas));
+}
+
 /* Print optimization for Resume Page */
 @media print {
   header,
