@@ -1,35 +1,19 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import { PROFILE_DATA } from '../data/profile';
 ---
 
-<BaseLayout
-  title="404 — Page Not Found | Thanh Dora Atelier"
-  description="The requested coordinate does not exist in this archive."
->
+<BaseLayout title={`Page not found — ${PROFILE_DATA.identity.name}`} description="This page does not exist.">
   <section class="py-28 sm:py-36">
     <div class="mx-auto max-w-2xl px-5 text-center sm:px-8">
-      <p class="font-mono text-xs uppercase tracking-widest text-sage">
-        HTTP STATUS 404 // UNMAPPED COORDINATE
-      </p>
+      <p class="font-mono text-xs uppercase tracking-widest text-sage">Error 404</p>
       <h1 class="mt-4 font-serif text-5xl font-medium text-ink sm:text-6xl">
-        This page has been <span class="italic font-normal text-sage">archived or moved.</span>
+        Page <span class="italic font-normal text-sage">not found.</span>
       </h1>
-      <p class="mt-4 text-base leading-relaxed text-ink-secondary">
-        The resource you are looking for is not present in the current edition of the Quiet Atelier monograph.
-      </p>
-      <div class="mt-8 flex items-center justify-center gap-4">
-        <a
-          href="/"
-          class="inline-flex items-center gap-2 rounded-full bg-ink px-6 py-3 text-sm font-medium text-canvas transition-colors hover:bg-sage"
-        >
-          <span>← Return to Frontispiece</span>
-        </a>
-        <a
-          href="/blog"
-          class="inline-flex items-center gap-2 rounded-full border border-rule-strong px-6 py-3 text-sm font-medium text-ink hover:border-sage hover:text-sage"
-        >
-          <span>Browse Journal</span>
-        </a>
+      <p class="mt-4 text-base leading-relaxed text-ink-secondary">The page you are looking for does not exist or has moved.</p>
+      <div class="mt-8 flex flex-wrap items-center justify-center gap-4">
+        <a href="/" class="inline-flex items-center gap-2 rounded-full bg-ink px-6 py-3 text-sm font-medium text-canvas transition-colors hover:bg-sage-deep">← Back to home</a>
+        <a href="/#projects" class="inline-flex items-center gap-2 rounded-full border border-rule-strong px-6 py-3 text-sm font-medium text-ink hover:border-sage hover:text-sage">See projects</a>
       </div>
     </div>
   </section>

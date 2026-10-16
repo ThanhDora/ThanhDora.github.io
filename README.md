@@ -2,11 +2,11 @@
 
 **Thanh Dora (Lê Thanh Đạt)** — Full-Stack Engineer & Systems Architect, Hà Nội.
 
-Trang portfolio, CV in được, và nhật ký kỹ thuật theo phong cách *Quiet Atelier*. Repo này là nguồn của [ThanhDora.github.io](https://ThanhDora.github.io).
+Trang portfolio, CV in được, theo phong cách *Quiet Atelier*. Repo này là nguồn của [ThanhDora.github.io](https://thanhdora.github.io).
 
 > Engineering calm, high-leverage systems where software meets business operations.
 
-[Xem trang](https://ThanhDora.github.io) · [CV](https://ThanhDora.github.io/resume) · [Blog](https://ThanhDora.github.io/blog) · [Email](mailto:thanhdora3605@gmail.com)
+[Xem trang](https://thanhdora.github.io) · [CV](https://thanhdora.github.io/resume/) · [Email](mailto:thanhdora3605@gmail.com)
 
 ![Astro](https://img.shields.io/badge/Astro-4-BC52EE?logo=astro&logoColor=white)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5-3178C6?logo=typescript&logoColor=white)
@@ -23,7 +23,7 @@ Repo này gom ba thứ:
 - **CV** tại `/resume`, bố cục sẵn để in
 - **Blog** viết bằng Markdown trong Content Collections
 
-Nội dung người đọc thấy nằm ở một chỗ: [`src/data/profile.ts`](./src/data/profile.ts). Bài viết nằm trong [`src/content/blog/`](./src/content/blog/).
+Nội dung người đọc thấy nằm ở một chỗ: [`src/data/profile.ts`](./src/data/profile.ts). Blog đang tắt; xem [`src/pages/_blog/README.md`](./src/pages/_blog/README.md) để bật lại.
 
 ## Trang này có gì
 
@@ -31,7 +31,7 @@ Nội dung người đọc thấy nằm ở một chỗ: [`src/data/profile.ts`]
 | --- | --- | --- |
 | Portfolio | `/` | Một trang, điều hướng bằng anchor |
 | CV | `/resume` | Sơ yếu lý lịch, in được |
-| Blog | `/blog` | Nhật ký kỹ thuật |
+| Blog | `/blog` | Đang tắt (xem `src/pages/_blog/README.md`) |
 | 404 | `/404` | Trang lỗi cùng tông editorial |
 
 Giao diện dùng linen ấm, mực than, và sage. Chuyển sáng/tối bằng nút trên trang, hoặc phím `T`.
@@ -77,7 +77,7 @@ npm run preview   # xem bản build
 │   ├── layouts/BaseLayout.astro   # SEO, JSON-LD, theme
 │   ├── pages/                     # /, /resume, /blog, /404
 │   └── styles/global.css
-└── astro.config.mjs               # site: https://ThanhDora.github.io
+└── astro.config.mjs               # site: https://thanhdora.github.io
 ```
 
 ## Sửa nội dung
@@ -95,7 +95,7 @@ Push lên nhánh mặc định sẽ kích hoạt workflow trong [`.github/workfl
 
 | | |
 | --- | --- |
-| Web | [thanhdora.github.io](https://ThanhDora.github.io) |
+| Web | [thanhdora.github.io](https://thanhdora.github.io) |
 | GitHub | [@ThanhDora](https://github.com/ThanhDora) |
 | LinkedIn | [thanhdora](https://linkedin.com/in/thanhdora) |
 | Facebook | [ThanhDora](https://facebook.com/ThanhDora) |

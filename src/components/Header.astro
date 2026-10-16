@@ -6,11 +6,13 @@ const isHome = pathname === '/' || pathname === '';
 
 const navItems = [
   { label: 'About', href: isHome ? '#about' : '/#about', index: '01' },
-  { label: 'Capabilities', href: isHome ? '#skills' : '/#skills', index: '02' },
-  { label: 'Selected Works', href: isHome ? '#projects' : '/#projects', index: '03' },
-  { label: 'Chronicle', href: isHome ? '#experience' : '/#experience', index: '04' },
-  { label: 'Journal', href: '/blog', index: '05', active: pathname.startsWith('/blog') },
-  { label: 'Resume', href: '/resume', index: '06', active: pathname.startsWith('/resume') },
+  { label: 'Skills', href: isHome ? '#skills' : '/#skills', index: '02' },
+  { label: 'Projects', href: isHome ? '#projects' : '/#projects', index: '03' },
+  { label: 'Timeline', href: isHome ? '#experience' : '/#experience', index: '04' },
+  { label: 'Contact', href: isHome ? '#contact' : '/#contact', index: '05' },
+  // Journal is hidden until real posts exist. Re-enable with:
+  // { label: 'Journal', href: '/blog/', index: '06', active: pathname.startsWith('/blog') },
+  { label: 'Resume', href: '/resume/', index: '06', active: pathname.startsWith('/resume') },
 ];
 ---
 
@@ -20,28 +22,27 @@ const navItems = [
       <!-- Brand Identity / Monogram -->
       <a
         href="/"
-        class="group flex items-baseline gap-3 focus:outline-none"
-        aria-label="Thanh Dora Home"
+        class="group flex items-baseline gap-3 whitespace-nowrap"
       >
         <span class="font-serif text-xl font-semibold tracking-tight text-ink transition-colors group-hover:text-sage">
           {PROFILE_DATA.identity.name}
         </span>
-        <span class="hidden font-mono text-[11px] uppercase tracking-widest text-ink-muted sm:inline-block">
-          / {PROFILE_DATA.identity.legalName}
+        <span class="hidden font-mono text-xs tracking-widest text-ink-muted 2xl:inline-block">
+          @{PROFILE_DATA.identity.handle}
         </span>
       </a>
 
       <!-- Desktop Navigation -->
-      <nav aria-label="Primary Navigation" class="hidden lg:flex items-center gap-7">
+      <nav aria-label="Primary" class="hidden lg:flex items-center gap-6">
         {navItems.map((item) => (
           <a
             href={item.href}
             class:list={[
-              'group flex items-baseline gap-1.5 text-sm font-medium transition-colors duration-200',
+              'group flex items-baseline gap-1.5 whitespace-nowrap text-sm font-medium transition-colors duration-200',
               item.active ? 'text-sage font-semibold' : 'text-ink-secondary hover:text-ink',
             ]}
           >
-            <span class="font-mono text-[10px] text-ink-muted group-hover:text-sage transition-colors">
+            <span class="font-mono text-xs text-ink-muted group-hover:text-sage transition-colors" aria-hidden="true">
               {item.index}
             </span>
             <span class="editorial-link">{item.label}</span>
@@ -49,23 +50,15 @@ const navItems = [
         ))}
       </nav>
 
-      <!-- Right Controls: Live Time + Theme Toggle + Contact CTA -->
+      <!-- Right controls: theme toggle + email CTA -->
       <div class="flex items-center gap-3">
-        <div
-          class="hidden xl:flex items-center gap-2 border-r border-rule pr-3 font-mono text-[11px] text-ink-muted"
-          title="Local Time in Ha Noi City, Vietnam (UTC+7)"
-        >
-          <span class="h-1.5 w-1.5 rounded-full bg-sage animate-pulse"></span>
-          <span>HAN</span>
-          <span id="atelier-clock">--:--</span>
-        </div>
 
         <!-- Theme Toggle Button -->
         <button
           id="theme-toggle"
           type="button"
-          class="group relative inline-flex h-9 w-9 items-center justify-center rounded-full border border-rule bg-canvas-elevated/60 text-ink-secondary transition-all duration-200 hover:border-sage hover:text-ink focus:outline-none"
-          aria-label="Toggle dark or light theme (Shortcut: T)"
+          class="group relative inline-flex h-9 w-9 items-center justify-center rounded-full border border-rule bg-canvas-elevated/60 text-ink-secondary transition-all duration-200 hover:border-sage hover:text-ink"
+          aria-label="Toggle dark mode"
           title="Toggle Light / Dark Mode (Press 'T')"
         >
           <!-- Sun icon (shown in dark mode) -->
@@ -99,11 +92,10 @@ const navItems = [
 
         <!-- Primary Inquiry Button -->
         <a
-          href={isHome ? '#contact' : '/#contact'}
-          class="hidden sm:inline-flex items-center gap-2 rounded-full border border-ink bg-ink px-4 py-1.5 text-xs font-medium tracking-wide text-canvas transition-all duration-200 hover:bg-sage hover:border-sage"
+          href={`mailto:${PROFILE_DATA.identity.email}`}
+          class="hidden sm:inline-flex items-center gap-2 whitespace-nowrap rounded-full border border-ink bg-ink px-4 py-1.5 text-xs font-medium tracking-wide text-canvas transition-all duration-200 hover:bg-sage-deep hover:border-sage-deep"
         >
-          <span>Inquire</span>
-          <span class="font-mono text-[10px] opacity-80">↗</span>
+          <span>Email me</span>
         </a>
 
         <!-- Mobile Menu Button -->
@@ -145,7 +137,7 @@ const navItems = [
           href={isHome ? '#contact' : '/#contact'}
           class="mobile-nav-link inline-flex items-center gap-2 rounded-full bg-ink px-5 py-2 text-xs font-medium text-canvas hover:bg-sage"
         >
-          <span>Start a Conversation</span>
+          <span>Get in touch</span>
           <span>→</span>
         </a>
         <span class="font-mono text-[11px] text-ink-muted">{PROFILE_DATA.identity.domain}</span>
@@ -161,7 +153,6 @@ const navItems = [
     const mobileDrawer = document.getElementById('mobile-drawer');
     const openIcon = document.getElementById('menu-icon-open');
     const closeIcon = document.getElementById('menu-icon-close');
-    const clockEl = document.getElementById('atelier-clock');
 
     const toggleTheme = () => {
       const isDark = document.documentElement.classList.toggle('dark');
@@ -201,25 +192,6 @@ const navItems = [
         closeIcon?.classList.add('hidden');
       });
     });
-
-    // Live Vietnam Time (UTC+7)
-    const updateClock = () => {
-      if (!clockEl) return;
-      try {
-        const now = new Date();
-        const formatter = new Intl.DateTimeFormat('en-GB', {
-          timeZone: 'Asia/Ho_Chi_Minh',
-          hour: '2-digit',
-          minute: '2-digit',
-          hour12: false,
-        });
-        clockEl.textContent = `${formatter.format(now)} ICT`;
-      } catch {
-        clockEl.textContent = 'UTC+7';
-      }
-    };
-    updateClock();
-    setInterval(updateClock, 30000);
   }
 
   setupHeaderInteractions();

@@ -1,150 +1,114 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { PROFILE_DATA } from '../data/profile';
+
+const { identity, hero, skills, projects, experience, education, socials } = PROFILE_DATA;
+const formatMonth = (ym: string) => {
+  const [y, m] = ym.split('-').map(Number);
+  return new Date(Date.UTC(y, m - 1, 1)).toLocaleDateString('en-US', { year: 'numeric', month: 'short', timeZone: 'UTC' });
+};
+let n = 0;
+const num = () => String(++n).padStart(2, '0');
 ---
 
-<BaseLayout
-  title={`Curriculum Vitae — ${PROFILE_DATA.identity.name} (${PROFILE_DATA.identity.legalName})`}
-  description={`Executive Resume and Technical Dossier of ${PROFILE_DATA.identity.name}, ${PROFILE_DATA.identity.role}.`}
->
+<BaseLayout title={`Resume — ${identity.name}`} description={`Resume of ${identity.name} (@${identity.handle}), ${identity.role}.`}>
   <section class="py-12 sm:py-20">
     <div class="mx-auto max-w-4xl px-5 sm:px-8 print-container">
-      <!-- Top Control Bar (Hidden when printing) -->
       <div class="mb-8 flex flex-wrap items-center justify-between gap-4 border-b border-rule pb-5 no-print">
-        <a
-          href="/"
-          class="inline-flex items-center gap-2 font-mono text-xs text-ink-muted hover:text-sage"
-        >
-          <span>←</span>
-          <span>RETURN TO PORTFOLIO</span>
-        </a>
-
-        <div class="flex items-center gap-3">
-          <button
-            id="print-cv-btn"
-            type="button"
-            class="inline-flex items-center gap-2 rounded-full bg-ink px-5 py-2 text-xs font-medium text-canvas transition-colors hover:bg-sage"
-          >
-            <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M6 9V2h12v7M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2M6 14h12v8H6v-8z" />
-            </svg>
-            <span>Print / Save as PDF</span>
-          </button>
-        </div>
+        <a href="/" class="inline-flex items-center gap-2 font-mono text-xs text-ink-muted hover:text-sage"><span aria-hidden="true">←</span><span>Back to home</span></a>
+        <button id="print-cv-btn" type="button" class="inline-flex items-center gap-2 rounded-full bg-ink px-5 py-2 text-xs font-medium text-canvas transition-colors hover:bg-sage-deep">
+          <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M6 9V2h12v7M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2M6 14h12v8H6v-8z" />
+          </svg>
+          <span>Print / Save as PDF</span>
+        </button>
       </div>
 
-      <!-- CV Document Sheet -->
-      <div class="rounded-2xl border border-rule bg-canvas-elevated/40 p-8 sm:p-12 print-container">
-        <!-- CV Header -->
+      <div class="rounded-2xl border border-rule bg-canvas-elevated/40 p-6 sm:p-12 print-container">
         <header class="border-b border-rule pb-8 flex flex-col sm:flex-row sm:items-end justify-between gap-6">
           <div>
-            <p class="font-mono text-xs uppercase tracking-widest text-sage">CURRICULUM VITAE</p>
-            <h1 class="mt-1 font-serif text-4xl font-semibold text-ink">
-              {PROFILE_DATA.identity.name}{' '}
-              <span class="font-normal italic text-ink-secondary text-2xl">
-                ({PROFILE_DATA.identity.legalName})
-              </span>
-            </h1>
-            <p class="mt-1.5 text-base font-medium text-ink-secondary">
-              {PROFILE_DATA.identity.role}
-            </p>
+            <p class="font-mono text-xs uppercase tracking-widest text-sage">Resume</p>
+            <h1 class="mt-1 font-serif text-4xl font-semibold text-ink">{identity.name}</h1>
+            <p class="mt-1.5 text-base font-medium text-ink-secondary">{identity.role} · @{identity.handle}</p>
           </div>
-
           <div class="font-mono text-xs text-ink-secondary space-y-1 sm:text-right">
-            <p>{PROFILE_DATA.identity.location}</p>
-            <p>
-              <a href={`mailto:${PROFILE_DATA.identity.email}`} class="text-ink hover:text-sage">
-                {PROFILE_DATA.identity.email}
-              </a>
-            </p>
-            <p>
-              <a href={`https://${PROFILE_DATA.identity.domain}`} class="hover:text-sage">
-                {PROFILE_DATA.identity.domain}
-              </a>
-              {' • '}
-              <a href={PROFILE_DATA.identity.github} class="hover:text-sage">
-                github.com/ThanhDora
-              </a>
-            </p>
-            <p>
-              <a href={PROFILE_DATA.identity.facebook} class="hover:text-sage">
-                facebook.com/ThanhDora
-              </a>
-              {' • '}
-              <a href={PROFILE_DATA.identity.x} class="hover:text-sage">
-                x.com/ThanhDora
-              </a>
-            </p>
+            <p>{identity.location}</p>
+            <p><a href={`mailto:${identity.email}`} class="text-ink hover:text-sage">{identity.email}</a></p>
+            <p><a href={`https://${identity.domain}`} class="hover:text-sage">{identity.domain}</a></p>
+            <p><a href={identity.github} class="hover:text-sage">github.com/{identity.handle}</a></p>
           </div>
         </header>
 
-        <!-- Executive Summary -->
         <section class="py-6 border-b border-rule">
-          <h2 class="font-mono text-xs uppercase tracking-widest text-sage">01 / EXECUTIVE SUMMARY</h2>
-          <p class="mt-3 text-sm leading-relaxed text-ink-secondary">
-            {PROFILE_DATA.hero.lead}
-          </p>
+          <h2 class="font-mono text-xs uppercase tracking-widest text-sage">{num()} / Summary</h2>
+          <p class="mt-3 text-sm leading-relaxed text-ink-secondary">{hero.lead}</p>
         </section>
 
-        <!-- Core Technical Matrix -->
         <section class="py-6 border-b border-rule">
-          <h2 class="font-mono text-xs uppercase tracking-widest text-sage">02 / TECHNICAL ARCHITECTURE MATRIX</h2>
-          <div class="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
-            {PROFILE_DATA.skills.map((group) => (
-              <div class="rounded-lg border border-rule/70 bg-canvas/70 p-4">
-                <h3 class="font-serif text-base font-medium text-ink">{group.category}</h3>
-                <p class="mt-1.5 text-xs text-ink-secondary leading-relaxed">
-                  {group.items.map((i) => i.name).join(' • ')}
-                </p>
-              </div>
-            ))}
-          </div>
-        </section>
-
-        <!-- Experience & Education -->
-        <section class="py-6 border-b border-rule">
-          <h2 class="font-mono text-xs uppercase tracking-widest text-sage">03 / PROFESSIONAL EXPERIENCE &amp; EDUCATION</h2>
-          <div class="mt-5 space-y-6">
-            {PROFILE_DATA.experience.map((exp) => (
+          <h2 class="font-mono text-xs uppercase tracking-widest text-sage">{num()} / Skills</h2>
+          <dl class="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2">
+            {skills.map((group) => (
               <div>
-                <div class="flex flex-wrap items-baseline justify-between gap-2">
-                  <h3 class="font-serif text-xl font-medium text-ink">
-                    {exp.role} — <span class="italic font-normal text-ink-secondary">{exp.organization}</span>
-                  </h3>
-                  <span class="font-mono text-xs text-sage">{exp.period}</span>
-                </div>
-                <p class="mt-1 text-xs text-ink-secondary">{exp.summary}</p>
-                <ul class="mt-2 space-y-1">
-                  {exp.highlights.map((h) => (
-                    <li class="flex items-start gap-2 text-xs text-ink-secondary">
-                      <span class="text-sage">•</span>
-                      <span>{h}</span>
-                    </li>
-                  ))}
-                </ul>
+                <dt class="font-serif text-base font-medium text-ink">{group.category}</dt>
+                <dd class="mt-0.5 text-sm text-ink-secondary">{group.items.join(' · ')}</dd>
               </div>
             ))}
-          </div>
+          </dl>
         </section>
 
-        <!-- Selected Systems & Projects -->
-        <section class="pt-6">
-          <h2 class="font-mono text-xs uppercase tracking-widest text-sage">04 / SELECTED ENGINEERING SYSTEMS</h2>
+        {experience.length > 0 && (
+          <section class="py-6 border-b border-rule">
+            <h2 class="font-mono text-xs uppercase tracking-widest text-sage">{num()} / Experience</h2>
+            <div class="mt-5 space-y-5">
+              {experience.map((exp) => (
+                <div>
+                  <div class="flex flex-wrap items-baseline justify-between gap-2">
+                    <h3 class="font-serif text-lg font-medium text-ink">{exp.role} — <span class="italic font-normal text-ink-secondary">{exp.organization}</span></h3>
+                    <span class="font-mono text-xs text-sage">{exp.period}</span>
+                  </div>
+                  <p class="mt-1 text-sm text-ink-secondary">{exp.summary}</p>
+                </div>
+              ))}
+            </div>
+          </section>
+        )}
+
+        {education.length > 0 && (
+          <section class="py-6 border-b border-rule">
+            <h2 class="font-mono text-xs uppercase tracking-widest text-sage">{num()} / Education</h2>
+            <ul class="mt-4 space-y-2">
+              {education.map((e) => (
+                <li class="text-sm text-ink-secondary"><span class="font-medium text-ink">{e.degree}</span>, {e.school} <span class="font-mono text-xs text-sage">({e.period})</span></li>
+              ))}
+            </ul>
+          </section>
+        )}
+
+        <section class="py-6 border-b border-rule">
+          <h2 class="font-mono text-xs uppercase tracking-widest text-sage">{num()} / Projects</h2>
           <div class="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
-            {PROFILE_DATA.projects.map((proj) => (
+            {projects.map((proj) => (
               <div class="rounded-lg border border-rule/70 bg-canvas/70 p-4">
-                <div class="flex items-center justify-between font-mono text-[10px] text-ink-muted">
-                  <span>{proj.category}</span>
-                  <span>{proj.year}</span>
+                <div class="flex items-center justify-between font-mono text-xs text-ink-muted">
+                  <span>{proj.category}</span><span>{formatMonth(proj.started)}</span>
                 </div>
                 <h3 class="mt-1 font-serif text-base font-medium text-ink">{proj.title}</h3>
-                <p class="mt-1 text-xs text-ink-secondary leading-relaxed">{proj.summary}</p>
-                <p class="mt-2 font-mono text-[10px] text-sage">
-                  Stack: {proj.stack.join(', ')}
+                <p class="mt-1 text-sm text-ink-secondary leading-relaxed">{proj.summary}</p>
+                <p class="mt-2 font-mono text-xs text-sage-deep">{proj.stack.join(', ')}</p>
+                <p class="mt-1 font-mono text-xs text-ink-secondary break-all">
+                  {proj.liveUrl && <><a href={proj.liveUrl} class="hover:text-sage">{proj.liveUrl.replace(/^https?:\/\//, '').replace(/\/$/, '')}</a> · </>}
+                  <a href={proj.repoUrl} class="hover:text-sage">{proj.repoUrl.replace('https://', '')}</a>
                 </p>
               </div>
             ))}
           </div>
+        </section>
+
+        <section class="pt-6">
+          <h2 class="font-mono text-xs uppercase tracking-widest text-sage">{num()} / Links</h2>
+          <ul class="mt-3 grid grid-cols-1 gap-1 font-mono text-xs text-ink-secondary sm:grid-cols-2">
+            {socials.map((s) => <li>{s.label}: <a href={s.url} class="text-ink hover:text-sage">{s.handle}</a></li>)}
+          </ul>
         </section>
       </div>
     </div>
@@ -152,7 +116,5 @@ import { PROFILE_DATA } from '../data/profile';
 </BaseLayout>
 
 <script>
-  document.getElementById('print-cv-btn')?.addEventListener('click', () => {
-    window.print();
-  });
+  document.getElementById('print-cv-btn')?.addEventListener('click', () => window.print());
 </script>

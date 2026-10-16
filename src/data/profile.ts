@@ -1,296 +1,191 @@
+// Site content. Every fact here comes from ThanhDora's GitHub profile and repositories.
+// Edit this file to update the site; do not add claims that cannot be backed up.
+
 export interface ProjectItem {
   id: string;
-  index: string;
   title: string;
-  subtitle: string;
-  category: 'Full-Stack' | 'AI & Automation' | 'iOS & Mobile' | 'DevOps & Cloud';
-  year: string;
-  role: string;
-  featured: boolean;
+  category: 'Full-Stack Web' | 'Telegram Bots' | 'iOS';
+  /** Repository creation month, from the GitHub API (YYYY-MM). */
+  started: string;
   summary: string;
-  architectureNote: string;
-  impactMetrics: string[];
+  highlights: string[];
   stack: string[];
+  status?: string;
+  /** Only set when a public deployment exists. */
   liveUrl?: string;
-  repoUrl?: string;
-  previewType: 'orchestrator' | 'commerce' | 'ios-atelier' | 'devops-mesh' | 'ops-ledger' | 'edge-gateway';
+  repoUrl: string;
 }
 
 export interface SkillGroup {
-  code: string;
   category: string;
-  subtitle: string;
-  items: {
-    name: string;
-    detail: string;
-    proficiency: 'Core' | 'Production' | 'Specialized';
-  }[];
+  items: string[];
 }
 
+/** Work history. TODO(user): add real roles here, e.g.
+ *  { period: '2024 — Present', role: 'Full-Stack Developer', organization: 'Company', location: 'Vietnam',
+ *    summary: 'What you did there.', technologies: ['Next.js'] }
+ *  The "Work experience" block on the home page and resume appears automatically once this has entries. */
 export interface ExperienceItem {
   period: string;
   role: string;
   organization: string;
-  location: string;
-  type: 'Work' | 'Independent' | 'Education';
+  location?: string;
   summary: string;
-  highlights: string[];
-  technologies: string[];
+  technologies?: string[];
+}
+
+/** Education. TODO(user): add school / degree / years. Rendered only when non-empty. */
+export interface EducationItem {
+  period: string;
+  school: string;
+  degree: string;
+}
+
+export interface SocialLink {
+  label: string;
+  handle: string;
+  url: string;
 }
 
 export const PROFILE_DATA = {
   identity: {
-    name: 'Thanh Dora',
-    legalName: 'Lê Thanh Đạt',
+    name: 'Lê Thanh Đạt',
+    handle: 'ThanhDora',
     monogram: 'TD.',
-    handle: '@ThanhDora',
-    role: 'Full-Stack Engineer & Systems Architect',
-    tagline: 'Crafting resilient web platforms, native iOS experiences, and autonomous AI workflows with quiet precision.',
-    location: 'Ha Noi City, Vietnam',
+    role: 'Full-Stack Developer',
+    tagline:
+      'Full-stack developer in Vietnam building web apps with Next.js and Node.js, Telegram bots in Python, and iOS apps in Swift.',
+    location: 'Vietnam',
     timezone: 'ICT (UTC+7)',
-    status: 'Available for select engineering & architecture mandates',
-    domain: 'ThanhDora.github.io',
-    githubPagesDomain: 'ThanhDora.github.io',
-    email: 'thanhdora3605@gmail.com',
+    domain: 'thanhdora.github.io',
+    email: 'ThanhDora3605@gmail.com',
     github: 'https://github.com/ThanhDora',
-    linkedin: 'https://linkedin.com/in/thanhdora',
-    facebook: 'https://facebook.com/ThanhDora',
-    x: 'https://x.com/ThanhDora',
+    website: 'https://thanhdora.site',
   },
 
+  // Socials linked from github.com/ThanhDora (verified via the GitHub API).
+  // TODO(user): add LinkedIn here if you have one.
+  socials: [
+    { label: 'GitHub', handle: '@ThanhDora', url: 'https://github.com/ThanhDora' },
+    { label: 'Facebook', handle: 'LeThanhDat.Dev', url: 'https://www.facebook.com/LeThanhDat.Dev/' },
+    { label: 'Instagram', handle: '@lee.thanh_dev_', url: 'https://www.instagram.com/lee.thanh_dev_/' },
+    { label: 'X', handle: '@ThanhDora3605', url: 'https://x.com/ThanhDora3605' },
+  ] satisfies SocialLink[],
+
   hero: {
-    editionLabel: 'ATELIER MONOGRAPH — VOL. IV / 2026',
-    headlinePrefix: 'Engineering calm,',
-    headlineItalic: 'high-leverage systems',
-    headlineSuffix: 'where software meets business operations.',
-    lead: 'I am Thanh Dora (Lê Thanh Đạt) — a full-stack developer and systems builder specializing in Next.js, Node.js/Express, native iOS, cloud DevOps, and applied AI tooling. I design software that remains fast, legible, and dependable under real-world operational load.',
-    metrics: [
-      { value: '99.95%', label: 'Production Uptime Target', note: 'Self-healing containerized infra' },
-      { value: '< 45ms', label: 'Edge API P95 Latency', note: 'Distributed caching & lean runtimes' },
-      { value: '4+ Pillars', label: 'Full-Stack • iOS • DevOps • AI', note: 'End-to-end ownership from metal to UI' },
-    ],
+    label: 'Full-Stack Developer · Vietnam',
+    headlinePrefix: 'I build',
+    headlineItalic: 'web apps, bots and iOS apps',
+    headlineSuffix: 'from the interface to the server.',
+    lead: 'I am Lê Thanh Đạt (ThanhDora). I work across Next.js and React on the front end, Express, Prisma, PostgreSQL and Redis on the back end, Python for Telegram bots, and Swift for iOS.',
   },
 
   about: {
-    sectionIndex: '01 / PHILOSOPHY & BACKGROUND',
-    heading: 'Bridging architectural rigor with pragmatic business execution.',
+    heading: 'Full-stack, from product UI to backend and deployment.',
     paragraphs: [
-      'Great software rarely announces itself with noise. Like a well-proportioned studio or a finely bound book, the best engineering feels effortless to the person using it — while concealing disciplined architecture underneath.',
-      'My work spans the complete product lifecycle: architecting reactive web applications with Next.js and TypeScript, engineering high-throughput backend services in Node.js and Express, crafting tactile native iOS apps in Swift, and automating cloud infrastructure across Cloudflare, Docker, and Linux servers.',
-      'Beyond pure code, I focus deeply on AI tooling and business operations — embedding LLM agents, structured pipelines, and internal observability tools directly into daily workflows so small teams can operate with the leverage of an enterprise.',
-    ],
-    principles: [
-      {
-        number: 'I',
-        title: 'End-to-End Ownership',
-        description: 'From DNS records, TLS certificates, and CI/CD pipelines to database indices and micro-typography on mobile screens.',
-      },
-      {
-        number: 'II',
-        title: 'AI as Operational Leverage',
-        description: 'Building deterministic, auditable AI workflows and developer tooling that eliminate repetitive operational bottlenecks.',
-      },
-      {
-        number: 'III',
-        title: 'Quiet Durability',
-        description: 'Preferring boring, battle-tested primitives, clear documentation, and zero-bloat static/edge architectures where possible.',
-      },
+      'I like working on whole products: the interface people use, the API and database behind it, and the deployment that keeps it running.',
+      'Besides product code, I write automation tools and Telegram bots, and use AI tools to speed up day-to-day work.',
+      'The projects below are my own open-source and personal work. Source code for each is on GitHub.',
     ],
   },
 
   skills: [
-    {
-      code: 'CAP — 01',
-      category: 'Frontend & Editorial Interfaces',
-      subtitle: 'Accessible, high-frame-rate web interfaces with typographic precision.',
-      items: [
-        { name: 'Next.js (App & Pages Router)', detail: 'SSR, ISR, React Server Components, Edge Middleware', proficiency: 'Core' },
-        { name: 'TypeScript & React 19', detail: 'Strict type safety, state machines, custom hooks', proficiency: 'Core' },
-        { name: 'Astro & Static Architecture', detail: 'Zero-JS islands, Content Collections, Lighthouse 100', proficiency: 'Core' },
-        { name: 'Tailwind CSS & Design Systems', detail: 'Custom token architecture, dark/light themes, fluid layout', proficiency: 'Core' },
-      ],
-    },
-    {
-      code: 'CAP — 02',
-      category: 'Backend & Distributed APIs',
-      subtitle: 'Resilient service layers built for throughput, observability, and clean contracts.',
-      items: [
-        { name: 'Node.js & Express', detail: 'RESTful & webhook architectures, stream processing, auth', proficiency: 'Core' },
-        { name: 'PostgreSQL, Prisma & Redis', detail: 'Relational modeling, query tuning, queue & cache layers', proficiency: 'Core' },
-        { name: 'API Security & Auth', detail: 'JWT, OAuth2/OIDC, rate limiting, cryptographic signing', proficiency: 'Production' },
-        { name: 'Realtime & Event Queues', detail: 'WebSockets, BullMQ, SSE for live agent streaming', proficiency: 'Production' },
-      ],
-    },
-    {
-      code: 'CAP — 03',
-      category: 'Native iOS & Mobile Craft',
-      subtitle: 'Fluid handheld experiences respecting Apple Human Interface Guidelines.',
-      items: [
-        { name: 'Swift & SwiftUI', detail: 'Declarative views, smooth spring animations, MVVM/TCA', proficiency: 'Core' },
-        { name: 'Offline-First Persistence', detail: 'SwiftData, CoreData, Keychain & background sync', proficiency: 'Production' },
-        { name: 'Native System Integration', detail: 'Push notifications, Widgets, App Intents, Biometrics', proficiency: 'Production' },
-        { name: 'TestFlight & App Store Ops', detail: 'Code signing, Fastlane automation, release management', proficiency: 'Specialized' },
-      ],
-    },
-    {
-      code: 'CAP — 04',
-      category: 'DevOps, Cloud & Infrastructure',
-      subtitle: 'Automated delivery pipelines, zero-downtime deployments, and edge networking.',
-      items: [
-        { name: 'Docker & Container Orchestration', detail: 'Multi-stage builds, Compose stacks, reverse proxies', proficiency: 'Core' },
-        { name: 'Cloudflare & DNS Architecture', detail: 'Zero-Trust tunnels, Workers, WAF, DNSSEC, caching', proficiency: 'Core' },
-        { name: 'GitHub Actions CI/CD', detail: 'Automated testing, matrix builds, artifact publishing', proficiency: 'Core' },
-        { name: 'Linux Administration & Nginx', detail: 'Systemd hardening, TLS automation, telemetry & logs', proficiency: 'Production' },
-      ],
-    },
-    {
-      code: 'CAP — 05',
-      category: 'AI Tooling & Business Operations',
-      subtitle: 'Practical autonomous workflows connecting LLMs to real business execution.',
-      items: [
-        { name: 'LLM Orchestration & Agents', detail: 'Structured outputs, function calling, MCP servers, RAG', proficiency: 'Core' },
-        { name: 'Workflow & Ops Automation', detail: 'Automated reporting, CRM/ERP webhooks, financial ledgers', proficiency: 'Core' },
-        { name: 'Internal Developer Tooling', detail: 'CLI utilities, code generation pipelines, evaluation suites', proficiency: 'Production' },
-        { name: 'Technical Product Strategy', detail: 'Unit economics, SLA design, cross-functional documentation', proficiency: 'Specialized' },
-      ],
-    },
+    { category: 'Frontend', items: ['Next.js', 'React', 'TypeScript', 'Tailwind CSS', 'Framer Motion'] },
+    { category: 'Backend', items: ['Node.js', 'Express', 'Prisma', 'PostgreSQL', 'MySQL / MariaDB', 'Redis', 'MongoDB', 'Socket.IO'] },
+    { category: 'Mobile', items: ['Swift', 'SwiftUI', 'iOS', 'Objective-C'] },
+    { category: 'Bots & Automation', items: ['Python', 'Pyrogram', 'Telegram Bot API', 'Scripting'] },
+    { category: 'DevOps & Tools', items: ['Docker', 'Docker Compose', 'GitHub Actions', 'Vercel', 'Linux'] },
   ] satisfies SkillGroup[],
 
   projects: [
     {
-      id: 'dora-agentic-ops',
-      index: '01',
-      title: 'DoraOps — Autonomous Business & AI Workflow Engine',
-      subtitle: 'Multi-agent orchestration & operational telemetry platform',
-      category: 'AI & Automation',
-      year: '2026',
-      role: 'Lead Architect & Full-Stack Engineer',
-      featured: true,
+      id: 'dora-marketplace',
+      title: 'DORA Marketplace',
+      category: 'Full-Stack Web',
+      started: '2026-05',
       summary:
-        'An internal operations control plane that unifies webhook ingestion, LLM document extraction, automated approval routing, and real-time audit logs. Designed to replace fragile spreadsheet workflows with deterministic Node.js queues and structured AI agents.',
-      architectureNote: 'Event-driven Node.js/Express core backed by Redis queues, PostgreSQL audit trails, and a Next.js editorial operator console.',
-      impactMetrics: [
-        'Reduced manual operational triage by 78%',
-        'Sub-1.2s median agent tool-execution turnaround',
-        '100% deterministic JSON schema validation with fallback retries',
+        'A marketplace for digital goods such as accounts, API keys, licenses and files, split into a Next.js client and an Express server.',
+      highlights: [
+        'Express + Prisma + PostgreSQL + Redis backend with Socket.IO, Zod and JWT',
+        'Google OAuth, email via Nodemailer, and MoMo, SePay and PayPal payments',
+        'Docker Compose dev stack with PostgreSQL, Redis, Mailhog and PgAdmin',
       ],
-      stack: ['Next.js', 'TypeScript', 'Node.js', 'Express', 'PostgreSQL', 'Redis', 'OpenAI / Claude SDK', 'Docker'],
-      liveUrl: 'https://ThanhDora.github.io',
-      repoUrl: 'https://github.com/ThanhDora',
-      previewType: 'orchestrator',
+      stack: ['Next.js', 'TypeScript', 'Express', 'Prisma', 'PostgreSQL', 'Redis', 'Socket.IO'],
+      liveUrl: 'https://thanhdora.site/',
+      repoUrl: 'https://github.com/ThanhDora/DORA-MARKETPLACE',
     },
     {
-      id: 'atelier-commerce-core',
-      index: '02',
-      title: 'Kanso — High-Throughput Headless Commerce & Inventory Suite',
-      subtitle: 'Full-stack Next.js storefront & Express order fulfillment engine',
-      category: 'Full-Stack',
-      year: '2025',
-      role: 'Full-Stack Developer',
-      featured: true,
+      id: 'dora-movies',
+      title: 'Dora Movies',
+      category: 'Full-Stack Web',
+      started: '2026-02',
       summary:
-        'A bespoke multi-warehouse commerce platform engineered for instant page transitions and strict inventory consistency. Combines edge-cached Next.js product catalogs with a transactional Express/PostgreSQL ledger handling flash-sale concurrency.',
-      architectureNote: 'Optimistic UI updates paired with row-level PostgreSQL locking and Cloudflare CDN stale-while-revalidate caching.',
-      impactMetrics: [
-        '99/100 Lighthouse Performance score on mobile 4G',
-        'Zero inventory oversell across 5,000+ concurrent checkout sessions',
-        'Automated reconciliation with domestic payment & logistics APIs',
+        'A Next.js movie website with catalog, list, actor and director pages, user login, and an admin flow for approving and scheduling movies.',
+      highlights: [
+        'Next.js App Router with route handlers for the admin API',
+        'Deployed on Vercel',
       ],
-      stack: ['Next.js', 'Tailwind CSS', 'Express', 'Node.js', 'PostgreSQL', 'Prisma', 'Cloudflare'],
-      liveUrl: 'https://ThanhDora.github.io',
-      repoUrl: 'https://github.com/ThanhDora',
-      previewType: 'commerce',
+      stack: ['Next.js', 'TypeScript', 'Vercel'],
+      liveUrl: 'https://dora-movies.vercel.app',
+      repoUrl: 'https://github.com/ThanhDora/Dora-movies',
     },
     {
-      id: 'pulse-ios-companion',
-      index: '03',
-      title: 'Chronicle iOS — Native Field Notes & Executive Telemetry App',
-      subtitle: 'Offline-first SwiftUI client with instant cloud synchronization',
-      category: 'iOS & Mobile',
-      year: '2025',
-      role: 'iOS & Backend Engineer',
-      featured: true,
+      id: 'dorateam-forum',
+      title: 'DoraTeam Forum',
+      category: 'Full-Stack Web',
+      started: '2026-03',
       summary:
-        'A tactile native iOS application crafted for founders and operators on the move. Captures voice memos, structured markdown notes, and live server/business KPIs with local SwiftData persistence and background delta sync.',
-      architectureNote: 'Built natively with SwiftUI, Swift Concurrency (async/await), Home Screen Widgets, and a lightweight Node.js sync API.',
-      impactMetrics: [
-        '60fps fluid typography & gesture navigation on iOS 18+',
-        'Seamless offline read/write with conflict-free CRDT-inspired merge',
-        'Integrated Lock Screen widgets for real-time infrastructure health',
+        'A forum, news board and knowledge-sharing site for the DoraTeam community, with a dark, emerald-toned interface.',
+      highlights: [
+        'Next.js front end with Tailwind CSS and Framer Motion',
+        'Express API with Prisma (MySQL/MariaDB) and Socket.IO',
       ],
-      stack: ['Swift', 'SwiftUI', 'SwiftData', 'App Intents', 'Node.js', 'REST API'],
-      liveUrl: 'https://github.com/ThanhDora',
-      repoUrl: 'https://github.com/ThanhDora',
-      previewType: 'ios-atelier',
+      stack: ['Next.js', 'TypeScript', 'Express', 'Prisma', 'MySQL', 'Socket.IO'],
+      repoUrl: 'https://github.com/ThanhDora/Forum-DoraTeam',
     },
     {
-      id: 'aegis-edge-deploy',
-      index: '04',
-      title: 'Aegis Edge — Self-Hosted Container & Cloudflare Tunnel Mesh',
-      subtitle: 'Zero-downtime deployment blueprint & observability stack',
-      category: 'DevOps & Cloud',
-      year: '2024 — 2026',
-      role: 'DevOps & Systems Engineer',
-      featured: true,
+      id: 'testflight-slot-monitor',
+      title: 'TestFlight Slot Monitor',
+      category: 'iOS',
+      started: '2026-05',
       summary:
-        'A production infrastructure kit for deploying full-stack applications across bare-metal Linux VPS and Cloudflare Zero Trust networks without exposing public ingress ports. Includes automated database backups, health probes, and instant rollback scripts.',
-      architectureNote: 'GitHub Actions pipelines building multi-arch Docker images deployed via blue-green container switching.',
-      impactMetrics: [
-        'Zero public SSH/HTTP port exposure via Cloudflare Tunnels',
-        'Under 15-second blue-green container cutover with zero dropped requests',
-        'Automated nightly encrypted snapshots to S3-compatible object storage',
+        'Watches TestFlight beta links and alerts as soon as a slot opens, through an iOS app, a Python server and a Telegram bot.',
+      highlights: [
+        'Python server: TestFlight page scraper, periodic checks, REST API with API-key auth, MongoDB history',
+        'SwiftUI app: live dashboard, push notifications, background checks',
+        'Telegram bot: status, device approval and real-time alerts via inline buttons',
       ],
-      stack: ['Docker', 'Cloudflare DNS & Tunnels', 'GitHub Actions', 'Nginx', 'Linux', 'Bash'],
-      liveUrl: 'https://github.com/ThanhDora',
-      repoUrl: 'https://github.com/ThanhDora',
-      previewType: 'devops-mesh',
+      stack: ['Swift', 'SwiftUI', 'Python', 'MongoDB', 'Telegram Bot API'],
+      repoUrl: 'https://github.com/ThanhDora/TestFlight-Slot-Monitor-Bot',
+    },
+    {
+      id: 'heartsync',
+      title: 'HeartSync',
+      category: 'iOS',
+      started: '2026-05',
+      summary:
+        'A SwiftUI couples app with partner profiles, a shared calendar of important dates, AI reply and gift suggestions, and reminders.',
+      highlights: ['Native SwiftUI, organised by feature (Calendar, AI Reply, Onboarding, Settings)'],
+      stack: ['Swift', 'SwiftUI', 'iOS'],
+      repoUrl: 'https://github.com/ThanhDora/HeartSync',
+    },
+    {
+      id: 'dorasuper-bot',
+      title: 'DoraSuper Bot',
+      category: 'Telegram Bots',
+      started: '2026-03',
+      summary:
+        'A Telegram group-management bot with admin commands, custom replies and a modular plugin structure.',
+      highlights: ['Python 3 with Pyrogram, data stored in MongoDB'],
+      stack: ['Python', 'Pyrogram', 'MongoDB', 'Telegram'],
+      status: 'No longer maintained',
+      repoUrl: 'https://github.com/ThanhDora/DoraSuper_Bot',
     },
   ] satisfies ProjectItem[],
 
-  experience: [
-    {
-      period: '2024 — Present',
-      role: 'Independent Full-Stack Engineer & Technical Architect',
-      organization: 'Thanh Dora Atelier / ThanhDora.github.io',
-      location: 'Vietnam • Remote Global',
-      type: 'Independent',
-      summary:
-        'Architecting end-to-end web platforms, custom AI automation pipelines, and mobile companions for growth-stage companies and internal ventures.',
-      highlights: [
-        'Designed and shipped full-stack Next.js and Node.js/Express applications serving high-concurrency operational workloads.',
-        'Integrated LLM agents and MCP-based developer tooling into business operations, cutting repetitive reporting and QA overhead.',
-        'Managed full cloud lifecycle across Namecheap, Cloudflare DNS/Zero-Trust, Docker clusters, and GitHub Actions CI/CD.',
-      ],
-      technologies: ['Next.js', 'Node.js', 'Express', 'TypeScript', 'iOS / Swift', 'Docker', 'Cloudflare', 'AI Tooling'],
-    },
-    {
-      period: '2022 — 2024',
-      role: 'Full-Stack Software Developer',
-      organization: 'Digital Product & Systems Engineering',
-      location: 'Ha Noi City, Vietnam',
-      type: 'Work',
-      summary:
-        'Built customer-facing web applications, backend API microservices, and internal operations dashboards across e-commerce and SaaS domains.',
-      highlights: [
-        'Engineered modular REST APIs with Express and PostgreSQL, improving critical endpoint response times by over 55%.',
-        'Collaborated closely with product and operations teams to translate complex business rules into maintainable TypeScript modules.',
-        'Established automated linting, type-checking, and deployment workflows via GitHub Actions.',
-      ],
-      technologies: ['React', 'Next.js', 'Express.js', 'PostgreSQL', 'Redis', 'Tailwind CSS', 'Git'],
-    },
-    {
-      period: '2020 — 2024',
-      role: 'B.S. Studies & Applied Software Engineering',
-      organization: 'Computer Science & Systems Engineering',
-      location: 'Vietnam',
-      type: 'Education',
-      summary:
-        'Focused on software architecture, distributed systems, mobile application development (iOS), and relational database design.',
-      highlights: [
-        'Built foundational projects spanning compilers, network protocols, native iOS applications, and full-stack web architectures.',
-        'Active contributor to developer communities, technical documentation, and open-source starter kits.',
-      ],
-      technologies: ['Algorithms', 'Distributed Systems', 'Swift', 'Web Standards', 'Linux'],
-    },
-  ] satisfies ExperienceItem[],
+  // TODO(user): fill in real work history; leave empty to hide the block.
+  experience: [] as ExperienceItem[],
+
+  // TODO(user): fill in real education; leave empty to hide the block.
+  education: [] as EducationItem[],
 };

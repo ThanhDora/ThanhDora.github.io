@@ -3,8 +3,8 @@ import tailwind from '@astrojs/tailwind';
 
 // https://astro.build/config
 export default defineConfig({
-  // Default to ThanhDora.github.io; update to https://profile.thanhdora.site or https://thanhdora.site when custom domain is ready
-  site: 'https://ThanhDora.github.io',
+  // Update to https://profile.thanhdora.site or https://thanhdora.site when custom domain is ready
+  site: 'https://thanhdora.github.io',
   integrations: [
     tailwind({
       applyBaseStyles: false,

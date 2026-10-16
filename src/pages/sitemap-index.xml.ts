@@ -1,26 +1,17 @@
 import type { APIRoute } from 'astro';
-import { getCollection } from 'astro:content';
 
 export const GET: APIRoute = async ({ site }) => {
-  const baseUrl = site?.toString().replace(/\/$/, '') || 'https://ThanhDora.github.io';
-  const posts = await getCollection('blog');
+  const baseUrl = site?.toString().replace(/\/$/, '') || 'https://thanhdora.github.io';
 
-  const staticPages = ['', '/blog', '/resume'];
+  // Add '/blog/' here when the journal is re-enabled (see src/pages/_blog/README.md).
+  const staticPages = ['/', '/resume/'];
 
   const urls = [
     ...staticPages.map(
       (path) => `  <url>
-    <loc>${baseUrl}${path || '/'}</loc>
+    <loc>${baseUrl}${path}</loc>
     <changefreq>weekly</changefreq>
-    <priority>${path === '' ? '1.0' : '0.8'}</priority>
-  </url>`
-    ),
-    ...posts.map(
-      (post) => `  <url>
-    <loc>${baseUrl}/blog/${post.slug}/</loc>
-    <lastmod>${post.data.pubDate.toISOString()}</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
+    <priority>${path === '/' ? '1.0' : '0.8'}</priority>
   </url>`
     ),
   ];

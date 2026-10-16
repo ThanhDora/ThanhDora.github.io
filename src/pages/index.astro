@@ -1,271 +1,135 @@
 ---
-import { getCollection } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
-import ProjectVisual from '../components/ProjectVisual.astro';
 import { PROFILE_DATA } from '../data/profile';
 
-const allPosts = (await getCollection('blog')).sort(
-  (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
-);
-const recentPosts = allPosts.slice(0, 3);
+const { identity, hero, about, skills, projects, experience, education, socials } = PROFILE_DATA;
+const projectCategories = ['All', ...new Set(projects.map((p) => p.category))];
 
-const projectCategories = ['All', 'Full-Stack', 'AI & Automation', 'iOS & Mobile', 'DevOps & Cloud'];
-
-const formatDate = (date: Date) =>
-  date.toLocaleDateString('en-US', {
-    year: 'numeric',
-    month: 'short',
-    day: '2-digit',
-  });
+const formatMonth = (ym: string) => {
+  const [y, m] = ym.split('-').map(Number);
+  return new Date(Date.UTC(y, m - 1, 1)).toLocaleDateString('en-US', { year: 'numeric', month: 'short', timeZone: 'UTC' });
+};
+const timeline = [...projects].sort((a, b) => b.started.localeCompare(a.started));
 ---
 
 <BaseLayout>
-  <!-- ==========================================
-       HERO SECTION — EDITORIAL MONOGRAPH MASTHEAD
-       ========================================== -->
-  <section class="relative border-b border-rule pt-12 pb-20 sm:pt-20 sm:pb-28">
+  <!-- HERO -->
+  <section class="relative border-b border-rule pt-12 pb-16 sm:pt-20 sm:pb-24">
     <div class="mx-auto max-w-6xl px-5 sm:px-8">
-      <!-- Top Editorial Metadata Strip -->
       <div class="mb-10 flex flex-wrap items-center justify-between gap-4 border-b border-rule/80 pb-4 font-mono text-xs text-ink-muted animate-quiet-in">
         <div class="flex items-center gap-2.5">
-          <span class="inline-block h-2 w-2 rounded-full bg-sage"></span>
-          <span class="tracking-widest uppercase">{PROFILE_DATA.hero.editionLabel}</span>
+          <span class="inline-block h-2 w-2 rounded-full bg-sage" aria-hidden="true"></span>
+          <span class="tracking-widest uppercase">{hero.label}</span>
         </div>
-        <div class="flex items-center gap-4">
-          <span>{PROFILE_DATA.identity.location}</span>
-          <span class="hidden sm:inline text-rule-strong">•</span>
-          <span class="hidden sm:inline text-sage font-medium">{PROFILE_DATA.identity.status}</span>
-        </div>
+        <span>{identity.timezone}</span>
       </div>
 
-      <!-- Main Asymmetric Hero Grid -->
       <div class="grid grid-cols-1 gap-12 lg:grid-cols-12 lg:items-end">
-        <!-- Left 8 Columns: Editorial Display Typography -->
         <div class="lg:col-span-8 space-y-8 animate-quiet-in delay-100">
           <h1 class="font-serif text-4xl leading-[1.12] tracking-editorial text-ink sm:text-6xl lg:text-[64px]">
-            {PROFILE_DATA.hero.headlinePrefix}{' '}
-            <span class="italic font-normal text-sage">{PROFILE_DATA.hero.headlineItalic}</span>{' '}
-            {PROFILE_DATA.hero.headlineSuffix}
+            {hero.headlinePrefix}{' '}
+            <span class="italic font-normal text-sage">{hero.headlineItalic}</span>{' '}
+            {hero.headlineSuffix}
           </h1>
-
-          <p class="max-w-2xl text-base leading-relaxed text-ink-secondary sm:text-lg">
-            {PROFILE_DATA.hero.lead}
-          </p>
-
-          <!-- Primary Action Bar -->
+          <p class="max-w-2xl text-base leading-relaxed text-ink-secondary sm:text-lg">{hero.lead}</p>
           <div class="flex flex-wrap items-center gap-4 pt-2">
-            <a
-              href="#projects"
-              class="inline-flex items-center gap-3 rounded-full bg-ink px-6 py-3.5 text-sm font-medium text-canvas transition-all duration-300 hover:bg-sage"
-            >
-              <span>Explore Selected Works</span>
-              <span class="font-mono text-xs">↓</span>
+            <a href="#projects" class="inline-flex items-center gap-3 rounded-full bg-ink px-6 py-3.5 text-sm font-medium text-canvas transition-all duration-300 hover:bg-sage-deep">
+              <span>See projects</span><span class="font-mono text-xs" aria-hidden="true">↓</span>
             </a>
-
-            <a
-              href="/resume"
-              class="inline-flex items-center gap-2.5 rounded-full border border-rule-strong bg-canvas-elevated/60 px-6 py-3.5 text-sm font-medium text-ink transition-all duration-300 hover:border-sage hover:text-sage"
-            >
-              <span>Curriculum Vitae</span>
-              <span class="font-mono text-xs">↗</span>
+            <a href="/resume/" class="inline-flex items-center gap-2.5 rounded-full border border-rule-strong bg-canvas-elevated/60 px-6 py-3.5 text-sm font-medium text-ink transition-all duration-300 hover:border-sage hover:text-sage">
+              <span>Resume</span><span class="font-mono text-xs" aria-hidden="true">↗</span>
             </a>
-
-            <a
-              href="#contact"
-              class="px-3 py-2 text-sm font-medium text-ink-secondary hover:text-ink editorial-link"
-            >
-              Direct Inquiry →
-            </a>
+            <a href="#contact" class="px-3 py-2 text-sm font-medium text-ink-secondary hover:text-ink editorial-link">Contact →</a>
           </div>
         </div>
 
-        <!-- Right 4 Columns: Architect's Dossier Card -->
         <div class="lg:col-span-4 animate-quiet-in delay-200">
           <aside class="relative rounded-xl border border-rule bg-canvas-elevated/70 p-6 shadow-sm">
             <div class="flex items-start justify-between border-b border-rule pb-4">
               <div>
-                <p class="font-mono text-[10px] uppercase tracking-widest text-ink-muted">ARCHITECT DOSSIER</p>
-                <h2 class="mt-1 font-serif text-2xl font-medium text-ink">{PROFILE_DATA.identity.name}</h2>
-                <p class="text-xs text-ink-secondary">{PROFILE_DATA.identity.legalName} • {PROFILE_DATA.identity.role}</p>
+                <p class="font-mono text-xs uppercase tracking-widest text-ink-muted">At a glance</p>
+                <p class="mt-1 font-serif text-2xl font-medium text-ink">{identity.name}</p>
+                <p class="text-sm text-ink-secondary">@{identity.handle} · {identity.role}</p>
               </div>
-              <div class="flex h-11 w-11 items-center justify-center rounded-full border border-sage/40 bg-sage/10 font-serif text-lg italic text-sage">
-                {PROFILE_DATA.identity.monogram}
+              <div class="flex h-11 w-11 items-center justify-center rounded-full border border-sage/40 bg-sage/10 font-serif text-lg italic text-sage-deep" aria-hidden="true">
+                {identity.monogram}
               </div>
             </div>
-
             <dl class="mt-4 space-y-3 font-mono text-xs">
-              <div class="flex justify-between border-b border-rule/60 pb-2">
-                <dt class="text-ink-muted">PRIMARY STACK</dt>
-                <dd class="text-ink font-medium text-right">Next.js • Node.js • Swift</dd>
+              <div class="flex justify-between gap-4 border-b border-rule/60 pb-2">
+                <dt class="text-ink-muted">WEB</dt><dd class="text-ink font-medium text-right">Next.js · Express · PostgreSQL</dd>
               </div>
-              <div class="flex justify-between border-b border-rule/60 pb-2">
-                <dt class="text-ink-muted">INFRASTRUCTURE</dt>
-                <dd class="text-ink font-medium text-right">Docker • Cloudflare • Linux</dd>
+              <div class="flex justify-between gap-4 border-b border-rule/60 pb-2">
+                <dt class="text-ink-muted">MOBILE</dt><dd class="text-ink font-medium text-right">Swift · SwiftUI</dd>
               </div>
-              <div class="flex justify-between border-b border-rule/60 pb-2">
-                <dt class="text-ink-muted">SPECIALIZATION</dt>
-                <dd class="text-sage font-medium text-right">Applied AI &amp; Ops Systems</dd>
+              <div class="flex justify-between gap-4 border-b border-rule/60 pb-2">
+                <dt class="text-ink-muted">BOTS</dt><dd class="text-ink font-medium text-right">Python · Telegram</dd>
               </div>
-              <div class="flex justify-between">
-                <dt class="text-ink-muted">DOMAIN</dt>
-                <dd class="text-ink font-medium text-right">{PROFILE_DATA.identity.domain}</dd>
+              <div class="flex justify-between gap-4">
+                <dt class="text-ink-muted">GITHUB</dt>
+                <dd class="text-right"><a href={identity.github} target="_blank" rel="noopener noreferrer" class="font-medium text-ink hover:text-sage">github.com/{identity.handle}</a></dd>
               </div>
             </dl>
           </aside>
         </div>
       </div>
-
-      <!-- Bottom Metrics Strip -->
-      <div class="mt-16 grid grid-cols-1 gap-6 border-t border-rule pt-8 sm:grid-cols-3 animate-quiet-in delay-300">
-        {PROFILE_DATA.hero.metrics.map((metric, idx) => (
-          <div class="flex flex-col justify-between border-l-2 border-sage/50 pl-4">
-            <div class="flex items-baseline justify-between">
-              <span class="font-serif text-3xl font-semibold text-ink sm:text-4xl">{metric.value}</span>
-              <span class="font-mono text-[10px] text-ink-muted">0{idx + 1}</span>
-            </div>
-            <p class="mt-1 text-sm font-medium text-ink">{metric.label}</p>
-            <p class="text-xs text-ink-muted">{metric.note}</p>
-          </div>
-        ))}
-      </div>
     </div>
   </section>
 
-  <!-- ==========================================
-       SECTION 01 — ABOUT & ARCHITECTURAL ETHOS
-       ========================================== -->
-  <section id="about" class="scroll-mt-16 border-b border-rule py-20 sm:py-28">
+  <!-- ABOUT -->
+  <section id="about" class="scroll-mt-16 border-b border-rule py-16 sm:py-24">
     <div class="mx-auto max-w-6xl px-5 sm:px-8">
-      <div class="grid grid-cols-1 gap-12 lg:grid-cols-12">
-        <!-- Section Index Column -->
+      <div class="grid grid-cols-1 gap-10 lg:grid-cols-12">
         <div class="lg:col-span-4 space-y-4">
-          <p class="font-mono text-xs uppercase tracking-widest text-sage">
-            § {PROFILE_DATA.about.sectionIndex}
-          </p>
-          <h2 class="font-serif text-3xl leading-snug text-ink sm:text-4xl">
-            {PROFILE_DATA.about.heading}
-          </h2>
-          <div class="h-[1px] w-16 bg-sage/60"></div>
-          <p class="font-mono text-xs leading-relaxed text-ink-muted pt-2">
-            Full-stack craftsmanship rooted in clarity, operational resilience, and thoughtful human interfaces.
-          </p>
+          <p class="font-mono text-xs uppercase tracking-widest text-sage">01 / About</p>
+          <h2 class="font-serif text-3xl leading-snug text-ink sm:text-4xl">{about.heading}</h2>
         </div>
-
-        <!-- Narrative & Principles Column -->
-        <div class="lg:col-span-8 space-y-10">
-          <div class="space-y-5 text-base leading-relaxed text-ink-secondary sm:text-lg">
-            {PROFILE_DATA.about.paragraphs.map((paragraph, i) => (
-              <p class={i === 0 ? 'font-serif text-xl sm:text-2xl text-ink leading-relaxed' : ''}>
-                {paragraph}
-              </p>
-            ))}
-          </div>
-
-          <!-- 3 Architectural Principles -->
-          <div class="grid grid-cols-1 gap-6 border-t border-rule pt-8 sm:grid-cols-3">
-            {PROFILE_DATA.about.principles.map((p) => (
-              <div class="rounded-lg border border-rule bg-canvas-elevated/40 p-5 transition-colors hover:border-sage/60">
-                <span class="font-serif text-lg italic text-sage">{p.number}.</span>
-                <h3 class="mt-2 font-serif text-lg font-medium text-ink">{p.title}</h3>
-                <p class="mt-2 text-xs leading-relaxed text-ink-secondary">{p.description}</p>
-              </div>
-            ))}
-          </div>
+        <div class="lg:col-span-8 space-y-5 text-base leading-relaxed text-ink-secondary sm:text-lg">
+          {about.paragraphs.map((p, i) => (
+            <p class={i === 0 ? 'font-serif text-xl sm:text-2xl text-ink leading-relaxed' : ''}>{p}</p>
+          ))}
         </div>
       </div>
     </div>
   </section>
 
-  <!-- ==========================================
-       SECTION 02 — TECHNICAL CAPABILITIES MATRIX
-       ========================================== -->
-  <section id="skills" class="scroll-mt-16 border-b border-rule bg-canvas-elevated/30 py-20 sm:py-28">
+  <!-- SKILLS -->
+  <section id="skills" class="scroll-mt-16 border-b border-rule bg-canvas-elevated/30 py-16 sm:py-24">
     <div class="mx-auto max-w-6xl px-5 sm:px-8">
-      <div class="flex flex-col justify-between gap-4 border-b border-rule pb-8 md:flex-row md:items-end">
-        <div>
-          <p class="font-mono text-xs uppercase tracking-widest text-sage">§ 02 / TECHNICAL CAPABILITIES</p>
-          <h2 class="mt-2 font-serif text-3xl text-ink sm:text-4xl">
-            Disciplines &amp; <span class="italic font-normal text-sage">Production Stack</span>
-          </h2>
-        </div>
-        <p class="max-w-md text-sm text-ink-secondary">
-          Organized by architectural layer — from reactive frontend interfaces and native iOS clients to distributed backends, DevOps, and autonomous AI workflows.
-        </p>
+      <div class="border-b border-rule pb-8">
+        <p class="font-mono text-xs uppercase tracking-widest text-sage">02 / Skills</p>
+        <h2 class="mt-2 font-serif text-3xl text-ink sm:text-4xl">Tools I <span class="italic font-normal text-sage">work with</span></h2>
       </div>
-
-      <!-- Capabilities Grid -->
-      <div class="mt-12 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-        {PROFILE_DATA.skills.map((group, idx) => (
-          <article
-            class:list={[
-              'flex flex-col justify-between rounded-xl border border-rule bg-canvas p-6 transition-all duration-300 hover:border-sage/70',
-              idx === 4 ? 'md:col-span-2 lg:col-span-2' : '',
-            ]}
-          >
-            <div>
-              <div class="flex items-center justify-between border-b border-rule/80 pb-3">
-                <span class="font-mono text-[11px] uppercase tracking-widest text-sage">{group.code}</span>
-                <span class="font-mono text-[10px] text-ink-muted">{group.items.length} MODULES</span>
-              </div>
-
-              <h3 class="mt-4 font-serif text-xl font-medium text-ink">{group.category}</h3>
-              <p class="mt-1 text-xs leading-relaxed text-ink-muted">{group.subtitle}</p>
-
-              <ul class="mt-6 divide-y divide-rule/60">
-                {group.items.map((skill) => (
-                  <li class="py-3 first:pt-0 last:pb-0">
-                    <div class="flex items-baseline justify-between gap-2">
-                      <span class="text-sm font-semibold text-ink">{skill.name}</span>
-                      <span
-                        class:list={[
-                          'rounded px-1.5 py-0.5 font-mono text-[10px] uppercase',
-                          skill.proficiency === 'Core'
-                            ? 'bg-sage/15 text-sage font-medium'
-                            : 'bg-canvas-subtle text-ink-muted',
-                        ]}
-                      >
-                        {skill.proficiency}
-                      </span>
-                    </div>
-                    <p class="mt-0.5 text-xs text-ink-secondary">{skill.detail}</p>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </article>
+      <div class="mt-10 grid grid-cols-1 gap-x-10 gap-y-8 sm:grid-cols-2 lg:grid-cols-3">
+        {skills.map((group) => (
+          <div>
+            <h3 class="font-serif text-xl font-medium text-ink">{group.category}</h3>
+            <ul class="mt-3 flex flex-wrap gap-2">
+              {group.items.map((item) => (
+                <li class="rounded-full border border-rule bg-canvas px-3 py-1 text-sm text-ink-secondary">{item}</li>
+              ))}
+            </ul>
+          </div>
         ))}
       </div>
     </div>
   </section>
 
-  <!-- ==========================================
-       SECTION 03 — SELECTED WORKS (PROJECTS)
-       ========================================== -->
-  <section id="projects" class="scroll-mt-16 border-b border-rule py-20 sm:py-28">
+  <!-- PROJECTS -->
+  <section id="projects" class="scroll-mt-16 border-b border-rule py-16 sm:py-24">
     <div class="mx-auto max-w-6xl px-5 sm:px-8">
-      <!-- Header + Interactive Category Filter -->
       <div class="flex flex-col justify-between gap-6 border-b border-rule pb-8 lg:flex-row lg:items-end">
         <div>
-          <p class="font-mono text-xs uppercase tracking-widest text-sage">§ 03 / SELECTED WORKS</p>
-          <h2 class="mt-2 font-serif text-3xl text-ink sm:text-4xl">
-            Architectural <span class="italic font-normal text-sage">Case Studies</span>
-          </h2>
+          <p class="font-mono text-xs uppercase tracking-widest text-sage">03 / Projects</p>
+          <h2 class="mt-2 font-serif text-3xl text-ink sm:text-4xl">Selected <span class="italic font-normal text-sage">projects</span></h2>
         </div>
-
-        <!-- Category Filter Buttons -->
-        <div class="flex flex-wrap gap-2" role="tablist" aria-label="Filter projects by domain">
+        <div class="flex flex-wrap gap-2" role="group" aria-label="Filter projects by category">
           {projectCategories.map((category, index) => (
             <button
               type="button"
-              role="tab"
-              aria-selected={index === 0 ? 'true' : 'false'}
+              aria-pressed={index === 0 ? 'true' : 'false'}
               data-filter={category}
-              class:list={[
-                'project-filter-btn rounded-full border px-3.5 py-1.5 font-mono text-xs transition-all duration-200',
-                index === 0
-                  ? 'border-ink bg-ink text-canvas hover:text-canvas'
-                  : 'border-rule bg-canvas-elevated/50 text-ink-secondary hover:border-sage hover:text-ink',
-              ]}
+              class="project-filter-btn rounded-full border border-rule bg-canvas-elevated/50 px-3.5 py-1.5 font-mono text-xs text-ink-secondary transition-all duration-200 hover:border-sage hover:text-ink"
             >
               {category}
             </button>
@@ -273,222 +137,42 @@ const formatDate = (date: Date) =>
         </div>
       </div>
 
-      <!-- Project Case Studies List -->
-      <div class="mt-12 space-y-12" id="projects-grid">
-        {PROFILE_DATA.projects.map((project) => (
+      <div class="mt-10 grid grid-cols-1 gap-6 md:grid-cols-2" id="projects-grid">
+        {projects.map((project) => (
           <article
+            id={project.id}
             data-category={project.category}
-            class="project-card group grid grid-cols-1 gap-8 rounded-2xl border border-rule bg-canvas-elevated/30 p-6 transition-all duration-300 hover:border-sage/70 hover:bg-canvas-elevated/60 sm:p-8 lg:grid-cols-12"
+            class="project-card group flex flex-col rounded-2xl border border-rule bg-canvas-elevated/30 p-6 transition-all duration-300 hover:border-sage/70 hover:bg-canvas-elevated/60 sm:p-7"
           >
-            <!-- Left 5 Columns: Architectural Schematic Visual -->
-            <div class="lg:col-span-5 flex flex-col">
-              <ProjectVisual type={project.previewType} index={project.index} />
+            <div class="flex flex-wrap items-center justify-between gap-2 font-mono text-xs text-ink-muted">
+              <span class="rounded bg-sage/10 px-2 py-0.5 text-sage-deep">{project.category}</span>
+              <span>Started {formatMonth(project.started)}{project.status ? ` · ${project.status}` : ''}</span>
             </div>
-
-            <!-- Right 7 Columns: Specification & Impact -->
-            <div class="lg:col-span-7 flex flex-col justify-between space-y-6">
-              <div>
-                <!-- Meta Header -->
-                <div class="flex flex-wrap items-center justify-between gap-2 font-mono text-xs text-ink-muted">
-                  <div class="flex items-center gap-2">
-                    <span class="text-sage font-semibold">NO. {project.index}</span>
-                    <span>•</span>
-                    <span class="rounded bg-sage/10 px-2 py-0.5 text-sage">{project.category}</span>
-                  </div>
-                  <span>{project.year} — {project.role}</span>
-                </div>
-
-                <!-- Title & Subtitle -->
-                <h3 class="mt-3 font-serif text-2xl font-medium text-ink group-hover:text-sage transition-colors sm:text-3xl">
-                  {project.title}
-                </h3>
-                <p class="mt-1 font-serif italic text-sm text-ink-secondary">{project.subtitle}</p>
-
-                <!-- Summary -->
-                <p class="mt-4 text-sm leading-relaxed text-ink-secondary sm:text-base">
-                  {project.summary}
-                </p>
-
-                <!-- Architecture Note & Impact Metrics -->
-                <div class="mt-5 rounded-lg border border-rule/80 bg-canvas/70 p-4">
-                  <p class="font-mono text-[10px] uppercase tracking-widest text-sage">
-                    ARCHITECTURE &amp; MEASURED IMPACT
-                  </p>
-                  <p class="mt-1 text-xs text-ink-secondary">{project.architectureNote}</p>
-                  <ul class="mt-3 grid grid-cols-1 gap-1.5 sm:grid-cols-3">
-                    {project.impactMetrics.map((metric) => (
-                      <li class="flex items-start gap-1.5 text-xs font-medium text-ink">
-                        <span class="text-sage">✓</span>
-                        <span>{metric}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              </div>
-
-              <!-- Stack Pills & Links -->
-              <div class="flex flex-col justify-between gap-4 border-t border-rule/80 pt-4 sm:flex-row sm:items-center">
-                <div class="flex flex-wrap gap-1.5">
-                  {project.stack.map((tech) => (
-                    <span class="rounded border border-rule bg-canvas px-2.5 py-0.5 font-mono text-[11px] text-ink-secondary">
-                      {tech}
-                    </span>
-                  ))}
-                </div>
-
-                <div class="flex items-center gap-4 font-mono text-xs shrink-0">
-                  {project.liveUrl && (
-                    <a
-                      href={project.liveUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      class="inline-flex items-center gap-1 font-medium text-ink hover:text-sage editorial-link"
-                    >
-                      <span>Live System</span>
-                      <span>↗</span>
-                    </a>
-                  )}
-                  {project.repoUrl && (
-                    <a
-                      href={project.repoUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      class="inline-flex items-center gap-1 text-ink-secondary hover:text-ink editorial-link"
-                    >
-                      <span>Source</span>
-                      <span>↗</span>
-                    </a>
-                  )}
-                </div>
-              </div>
-            </div>
-          </article>
-        ))}
-      </div>
-    </div>
-  </section>
-
-  <!-- ==========================================
-       SECTION 04 — EXPERIENCE & EDUCATION
-       ========================================== -->
-  <section id="experience" class="scroll-mt-16 border-b border-rule bg-canvas-elevated/30 py-20 sm:py-28">
-    <div class="mx-auto max-w-6xl px-5 sm:px-8">
-      <div class="grid grid-cols-1 gap-12 lg:grid-cols-12">
-        <!-- Left 4 Columns -->
-        <div class="lg:col-span-4 space-y-4">
-          <p class="font-mono text-xs uppercase tracking-widest text-sage">§ 04 / CHRONICLE</p>
-          <h2 class="font-serif text-3xl text-ink sm:text-4xl">
-            Experience &amp; <span class="italic font-normal text-sage">Foundations</span>
-          </h2>
-          <p class="text-sm leading-relaxed text-ink-secondary">
-            A progression of independent systems architecture, full-stack product engineering, and computer science foundations.
-          </p>
-          <div class="pt-4">
-            <a
-              href="/resume"
-              class="inline-flex items-center gap-2 rounded-full border border-rule-strong bg-canvas px-5 py-2.5 font-mono text-xs text-ink transition-colors hover:border-sage hover:text-sage"
-            >
-              <span>View Full Printable CV</span>
-              <span>→</span>
-            </a>
-          </div>
-        </div>
-
-        <!-- Right 8 Columns: Timeline -->
-        <div class="lg:col-span-8 divide-y divide-rule">
-          {PROFILE_DATA.experience.map((item) => (
-            <div class="py-8 first:pt-0 last:pb-0">
-              <div class="flex flex-wrap items-baseline justify-between gap-2">
-                <span class="font-mono text-xs font-medium text-sage">{item.period}</span>
-                <span class="rounded border border-rule px-2 py-0.5 font-mono text-[10px] uppercase text-ink-muted">
-                  {item.type} • {item.location}
-                </span>
-              </div>
-
-              <h3 class="mt-2 font-serif text-2xl font-medium text-ink">{item.role}</h3>
-              <p class="text-sm font-medium text-ink-secondary">{item.organization}</p>
-
-              <p class="mt-3 text-sm leading-relaxed text-ink-secondary">{item.summary}</p>
-
-              <ul class="mt-4 space-y-2">
-                {item.highlights.map((bullet) => (
-                  <li class="flex items-start gap-2.5 text-sm text-ink-secondary">
-                    <span class="mt-1.5 h-1.5 w-1.5 rounded-full bg-sage shrink-0"></span>
-                    <span>{bullet}</span>
-                  </li>
+            <h3 class="mt-3 font-serif text-2xl font-medium text-ink">{project.title}</h3>
+            <p class="mt-3 text-sm leading-relaxed text-ink-secondary sm:text-base">{project.summary}</p>
+            <ul class="mt-4 space-y-1.5">
+              {project.highlights.map((h) => (
+                <li class="flex items-start gap-2 text-sm text-ink-secondary">
+                  <span class="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-sage" aria-hidden="true"></span><span>{h}</span>
+                </li>
+              ))}
+            </ul>
+            <div class="mt-auto pt-5">
+              <ul class="flex flex-wrap gap-1.5" aria-label="Tech stack">
+                {project.stack.map((tech) => (
+                  <li class="rounded border border-rule bg-canvas px-2.5 py-0.5 font-mono text-xs text-ink-secondary">{tech}</li>
                 ))}
               </ul>
-
-              <div class="mt-4 flex flex-wrap gap-1.5">
-                {item.technologies.map((tech) => (
-                  <span class="rounded bg-canvas px-2 py-0.5 font-mono text-[11px] text-ink-muted border border-rule/70">
-                    {tech}
-                  </span>
-                ))}
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ==========================================
-       SECTION 05 — ATELIER JOURNAL / NOTES
-       ========================================== -->
-  <section id="writing" class="scroll-mt-16 border-b border-rule py-20 sm:py-28">
-    <div class="mx-auto max-w-6xl px-5 sm:px-8">
-      <div class="flex flex-col justify-between gap-4 border-b border-rule pb-8 sm:flex-row sm:items-end">
-        <div>
-          <p class="font-mono text-xs uppercase tracking-widest text-sage">§ 05 / ATELIER NOTES</p>
-          <h2 class="mt-2 font-serif text-3xl text-ink sm:text-4xl">
-            Technical <span class="italic font-normal text-sage">Monographs &amp; Essays</span>
-          </h2>
-        </div>
-        <a
-          href="/blog"
-          class="font-mono text-xs uppercase tracking-widest text-ink hover:text-sage editorial-link"
-        >
-          Read All Archives ({allPosts.length}) →
-        </a>
-      </div>
-
-      <div class="mt-10 grid grid-cols-1 gap-8 md:grid-cols-3">
-        {recentPosts.map((post, idx) => (
-          <article class="group flex flex-col justify-between rounded-xl border border-rule bg-canvas-elevated/30 p-6 transition-all duration-300 hover:border-sage/70 hover:bg-canvas-elevated/60">
-            <div>
-              <div class="flex items-center justify-between font-mono text-[11px] text-ink-muted">
-                <span class="text-sage">NOTE 0{idx + 1}</span>
-                <time datetime={post.data.pubDate.toISOString()}>{formatDate(post.data.pubDate)}</time>
-              </div>
-
-              <p class="mt-3 font-mono text-[10px] uppercase tracking-widest text-ink-muted">
-                {post.data.category} • {post.data.readingTime}
-              </p>
-
-              <h3 class="mt-2 font-serif text-xl font-medium leading-snug text-ink group-hover:text-sage transition-colors">
-                <a href={`/blog/${post.slug}`} class="focus:outline-none">
-                  {post.data.title}
+              <div class="mt-4 flex items-center gap-5 border-t border-rule/80 pt-4 font-mono text-sm">
+                {project.liveUrl && (
+                  <a href={project.liveUrl} target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1 font-medium text-ink hover:text-sage editorial-link">
+                    Live site <span aria-hidden="true">↗</span>
+                  </a>
+                )}
+                <a href={project.repoUrl} target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1 text-ink-secondary hover:text-ink editorial-link">
+                  Source on GitHub <span aria-hidden="true">↗</span>
                 </a>
-              </h3>
-
-              <p class="mt-3 text-xs leading-relaxed text-ink-secondary line-clamp-3">
-                {post.data.description}
-              </p>
-            </div>
-
-            <div class="mt-6 border-t border-rule/70 pt-4 flex items-center justify-between">
-              <div class="flex gap-1.5">
-                {post.data.tags.slice(0, 2).map((tag) => (
-                  <span class="font-mono text-[10px] text-ink-muted">#{tag}</span>
-                ))}
               </div>
-              <a
-                href={`/blog/${post.slug}`}
-                class="font-mono text-xs font-medium text-ink group-hover:text-sage"
-              >
-                Read Essay →
-              </a>
             </div>
           </article>
         ))}
@@ -496,160 +180,111 @@ const formatDate = (date: Date) =>
     </div>
   </section>
 
-  <!-- ==========================================
-       SECTION 06 — CONTACT & INQUIRIES
-       ========================================== -->
-  <section id="contact" class="scroll-mt-16 py-20 sm:py-28">
+  <!-- TIMELINE / EXPERIENCE -->
+  <section id="experience" class="scroll-mt-16 border-b border-rule bg-canvas-elevated/30 py-16 sm:py-24">
     <div class="mx-auto max-w-6xl px-5 sm:px-8">
-      <div class="grid grid-cols-1 gap-12 lg:grid-cols-12">
-        <!-- Left 5 Columns: Direct Channels & Copy Email -->
-        <div class="lg:col-span-5 space-y-6">
-          <p class="font-mono text-xs uppercase tracking-widest text-sage">§ 06 / INQUIRIES &amp; DIALOGUE</p>
-          <h2 class="font-serif text-3xl leading-tight text-ink sm:text-5xl">
-            Let’s build something <span class="italic font-normal text-sage">enduring.</span>
-          </h2>
-          <p class="text-sm leading-relaxed text-ink-secondary sm:text-base">
-            Whether you need an end-to-end full-stack platform, native iOS engineering, cloud DevOps hardening, or custom AI operational tooling, I would love to hear about your mandate.
-          </p>
-
-          <!-- Direct Email Copy Box -->
-          <div class="rounded-xl border border-rule bg-canvas-elevated/60 p-5">
-            <p class="font-mono text-[10px] uppercase tracking-widest text-ink-muted">DIRECT ELECTRONIC MAIL</p>
-            <div class="mt-2 flex items-center justify-between gap-3">
-              <a
-                href={`mailto:${PROFILE_DATA.identity.email}`}
-                class="font-mono text-sm font-medium text-ink hover:text-sage break-all"
-              >
-                {PROFILE_DATA.identity.email}
-              </a>
-              <button
-                id="copy-email-btn"
-                type="button"
-                data-email={PROFILE_DATA.identity.email}
-                class="shrink-0 rounded-full border border-rule bg-canvas px-3 py-1 font-mono text-[11px] text-ink-secondary transition-colors hover:border-sage hover:text-sage"
-              >
-                Copy Address
-              </button>
-            </div>
-          </div>
-
-          <!-- Social & Architectural Links -->
-          <div class="space-y-2 pt-2 font-mono text-xs">
-            <div class="flex items-center justify-between border-b border-rule/70 py-2.5">
-              <span class="text-ink-muted">GITHUB</span>
-              <a href={PROFILE_DATA.identity.github} target="_blank" rel="noopener noreferrer" class="text-ink hover:text-sage editorial-link">
-                github.com/ThanhDora ↗
-              </a>
-            </div>
-            <div class="flex items-center justify-between border-b border-rule/70 py-2.5">
-              <span class="text-ink-muted">LINKEDIN</span>
-              <a href={PROFILE_DATA.identity.linkedin} target="_blank" rel="noopener noreferrer" class="text-ink hover:text-sage editorial-link">
-                linkedin.com/in/thanhdora ↗
-              </a>
-            </div>
-            <div class="flex items-center justify-between border-b border-rule/70 py-2.5">
-              <span class="text-ink-muted">FACEBOOK</span>
-              <a href={PROFILE_DATA.identity.facebook} target="_blank" rel="noopener noreferrer" class="text-ink hover:text-sage editorial-link">
-                facebook.com/ThanhDora ↗
-              </a>
-            </div>
-            <div class="flex items-center justify-between border-b border-rule/70 py-2.5">
-              <span class="text-ink-muted">X (TWITTER)</span>
-              <a href={PROFILE_DATA.identity.x} target="_blank" rel="noopener noreferrer" class="text-ink hover:text-sage editorial-link">
-                x.com/ThanhDora ↗
-              </a>
-            </div>
-            <div class="flex items-center justify-between border-b border-rule/70 py-2.5">
-              <span class="text-ink-muted">PRIMARY DOMAIN</span>
-              <a href={`https://${PROFILE_DATA.identity.domain}`} target="_blank" rel="noopener noreferrer" class="text-ink hover:text-sage editorial-link">
-                {PROFILE_DATA.identity.domain} ↗
-              </a>
-            </div>
-          </div>
+      <div class="grid grid-cols-1 gap-10 lg:grid-cols-12">
+        <div class="lg:col-span-4 space-y-4">
+          <p class="font-mono text-xs uppercase tracking-widest text-sage">04 / Timeline</p>
+          <h2 class="font-serif text-3xl text-ink sm:text-4xl">Experience <span class="italic font-normal text-sage">&amp; projects</span></h2>
+          <p class="text-sm leading-relaxed text-ink-secondary">Project dates are when each repository was created on GitHub.</p>
         </div>
 
-        <!-- Right 7 Columns: Editorial Dispatch Form -->
-        <div class="lg:col-span-7">
-          <form
-            id="atelier-contact-form"
-            class="rounded-2xl border border-rule bg-canvas-elevated/50 p-6 sm:p-8 space-y-6"
-          >
-            <div class="flex items-center justify-between border-b border-rule pb-4">
-              <span class="font-mono text-xs uppercase tracking-widest text-ink">DISPATCH MESSAGE</span>
-              <span class="font-mono text-[11px] text-sage">● DIRECT TO INBOX</span>
+        <div class="lg:col-span-8 space-y-10">
+          {experience.length > 0 && (
+            <div>
+              <h3 class="font-mono text-xs uppercase tracking-widest text-ink-muted">Work experience</h3>
+              <div class="mt-4 divide-y divide-rule">
+                {experience.map((item) => (
+                  <div class="py-6 first:pt-0">
+                    <p class="font-mono text-xs font-medium text-sage">{item.period}</p>
+                    <p class="mt-1 font-serif text-xl font-medium text-ink">{item.role}</p>
+                    <p class="text-sm font-medium text-ink-secondary">{item.organization}{item.location ? ` · ${item.location}` : ''}</p>
+                    <p class="mt-2 text-sm leading-relaxed text-ink-secondary">{item.summary}</p>
+                  </div>
+                ))}
+              </div>
             </div>
+          )}
 
+          {education.length > 0 && (
+            <div>
+              <h3 class="font-mono text-xs uppercase tracking-widest text-ink-muted">Education</h3>
+              <ul class="mt-4 space-y-3">
+                {education.map((e) => (
+                  <li class="text-sm text-ink-secondary"><span class="font-mono text-xs text-sage">{e.period}</span> · <span class="font-medium text-ink">{e.degree}</span>, {e.school}</li>
+                ))}
+              </ul>
+            </div>
+          )}
+
+          <div>
+            <h3 class="font-mono text-xs uppercase tracking-widest text-ink-muted">Open-source &amp; personal projects</h3>
+            <ol class="mt-4 border-l border-rule">
+              {timeline.map((p) => (
+                <li class="relative pb-5 pl-6 last:pb-0">
+                  <span class="absolute -left-[5px] top-1.5 h-2.5 w-2.5 rounded-full border-2 border-canvas bg-sage" aria-hidden="true"></span>
+                  <p class="font-mono text-xs text-sage-deep">{formatMonth(p.started)}</p>
+                  <p class="mt-0.5 text-sm text-ink-secondary">
+                    <a href={`#${p.id}`} class="font-medium text-ink hover:text-sage">{p.title}</a> · {p.category}
+                  </p>
+                </li>
+              ))}
+            </ol>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section id="contact" class="scroll-mt-16 py-16 sm:py-24">
+    <div class="mx-auto max-w-6xl px-5 sm:px-8">
+      <div class="grid grid-cols-1 gap-12 lg:grid-cols-12">
+        <div class="lg:col-span-5 space-y-6">
+          <p class="font-mono text-xs uppercase tracking-widest text-sage">05 / Contact</p>
+          <h2 class="font-serif text-3xl leading-tight text-ink sm:text-5xl">Get in <span class="italic font-normal text-sage">touch.</span></h2>
+          <p class="text-sm leading-relaxed text-ink-secondary sm:text-base">Have a project or an idea you want to talk about? Send me an email.</p>
+
+          <div class="rounded-xl border border-rule bg-canvas-elevated/60 p-5">
+            <p class="font-mono text-xs uppercase tracking-widest text-ink-muted">Email</p>
+            <div class="mt-2 flex items-center justify-between gap-3">
+              <a href={`mailto:${identity.email}`} class="font-mono text-sm font-medium text-ink hover:text-sage break-all">{identity.email}</a>
+              <button id="copy-email-btn" type="button" data-email={identity.email} class="shrink-0 rounded-full border border-rule bg-canvas px-3 py-1.5 font-mono text-xs text-ink-secondary transition-colors hover:border-sage hover:text-sage">Copy</button>
+            </div>
+          </div>
+
+          <ul class="space-y-1 pt-2 font-mono text-sm">
+            {socials.map((s) => (
+              <li class="flex items-center justify-between border-b border-rule/70 py-2.5">
+                <span class="text-ink-muted">{s.label}</span>
+                <a href={s.url} target="_blank" rel="noopener noreferrer me" class="text-ink hover:text-sage editorial-link">{s.handle} <span aria-hidden="true">↗</span></a>
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        <div class="lg:col-span-7">
+          <form id="contact-form" class="rounded-2xl border border-rule bg-canvas-elevated/50 p-6 sm:p-8 space-y-6">
+            <p class="border-b border-rule pb-4 font-mono text-xs uppercase tracking-widest text-ink">Write a message</p>
             <div class="grid grid-cols-1 gap-5 sm:grid-cols-2">
               <div>
-                <label for="sender-name" class="block font-mono text-[11px] uppercase tracking-wider text-ink-muted">
-                  Your Name *
-                </label>
-                <input
-                  id="sender-name"
-                  name="name"
-                  type="text"
-                  required
-                  placeholder="Alex Nguyen"
-                  class="mt-2 w-full rounded-lg border border-rule bg-canvas px-4 py-2.5 text-sm text-ink placeholder:text-ink-muted/60 focus:border-sage focus:outline-none"
-                />
+                <label for="sender-name" class="block font-mono text-xs uppercase tracking-wider text-ink-muted">Your name *</label>
+                <input id="sender-name" name="name" type="text" required autocomplete="name" class="mt-2 w-full rounded-lg border border-rule bg-canvas px-4 py-2.5 text-sm text-ink focus:border-sage focus:outline-none" />
               </div>
-
               <div>
-                <label for="sender-email" class="block font-mono text-[11px] uppercase tracking-wider text-ink-muted">
-                  Return Email *
-                </label>
-                <input
-                  id="sender-email"
-                  name="email"
-                  type="email"
-                  required
-                  placeholder="alex@company.com"
-                  class="mt-2 w-full rounded-lg border border-rule bg-canvas px-4 py-2.5 text-sm text-ink placeholder:text-ink-muted/60 focus:border-sage focus:outline-none"
-                />
+                <label for="sender-email" class="block font-mono text-xs uppercase tracking-wider text-ink-muted">Your email *</label>
+                <input id="sender-email" name="email" type="email" required autocomplete="email" class="mt-2 w-full rounded-lg border border-rule bg-canvas px-4 py-2.5 text-sm text-ink focus:border-sage focus:outline-none" />
               </div>
             </div>
-
             <div>
-              <label for="inquiry-scope" class="block font-mono text-[11px] uppercase tracking-wider text-ink-muted">
-                Mandate / Area of Interest
-              </label>
-              <select
-                id="inquiry-scope"
-                name="scope"
-                class="mt-2 w-full rounded-lg border border-rule bg-canvas px-4 py-2.5 text-sm text-ink focus:border-sage focus:outline-none"
-              >
-                <option value="Full-Stack Engineering (Next.js / Node.js)">Full-Stack Engineering (Next.js / Node.js)</option>
-                <option value="AI Workflow & Operations Automation">AI Workflow &amp; Operations Automation</option>
-                <option value="Native iOS Application Development">Native iOS Application Development</option>
-                <option value="DevOps, Docker & Cloudflare Architecture">DevOps, Docker &amp; Cloudflare Architecture</option>
-                <option value="Advisory / General Opportunity">Advisory / General Opportunity</option>
-              </select>
+              <label for="inquiry-message" class="block font-mono text-xs uppercase tracking-wider text-ink-muted">Message *</label>
+              <textarea id="inquiry-message" name="message" rows="4" required class="mt-2 w-full rounded-lg border border-rule bg-canvas px-4 py-2.5 text-sm text-ink focus:border-sage focus:outline-none"></textarea>
             </div>
-
-            <div>
-              <label for="inquiry-message" class="block font-mono text-[11px] uppercase tracking-wider text-ink-muted">
-                Project Brief or Context *
-              </label>
-              <textarea
-                id="inquiry-message"
-                name="message"
-                rows="4"
-                required
-                placeholder="Share a brief overview of your system, timeline, or engineering goals..."
-                class="mt-2 w-full rounded-lg border border-rule bg-canvas px-4 py-2.5 text-sm text-ink placeholder:text-ink-muted/60 focus:border-sage focus:outline-none"
-              ></textarea>
-            </div>
-
             <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pt-2">
-              <p id="form-feedback" class="font-mono text-xs text-ink-muted">
-                Opens your default mail client with pre-formatted brief, or copies directly.
-              </p>
-              <button
-                type="submit"
-                class="inline-flex items-center gap-2 rounded-full bg-ink px-7 py-3 text-sm font-medium text-canvas transition-all duration-200 hover:bg-sage"
-              >
-                <span>Transmit Inquiry</span>
-                <span class="font-mono text-xs">→</span>
+              <p id="form-feedback" class="font-mono text-xs text-ink-muted">Opens your email app with the message filled in.</p>
+              <button type="submit" class="inline-flex items-center gap-2 rounded-full bg-ink px-7 py-3 text-sm font-medium text-canvas transition-all duration-200 hover:bg-sage-deep">
+                <span>Send</span><span class="font-mono text-xs" aria-hidden="true">→</span>
               </button>
             </div>
           </form>
@@ -660,85 +295,45 @@ const formatDate = (date: Date) =>
 </BaseLayout>
 
 <script>
-  // 1. Project Category Filtering
-  const filterBtns = document.querySelectorAll('.project-filter-btn');
-  const projectCards = document.querySelectorAll('.project-card');
+  import { PROFILE_DATA } from '../data/profile';
+  const EMAIL = PROFILE_DATA.identity.email;
 
+  // Project filter
+  const filterBtns = document.querySelectorAll<HTMLButtonElement>('.project-filter-btn');
+  const projectCards = document.querySelectorAll<HTMLElement>('.project-card');
   filterBtns.forEach((btn) => {
     btn.addEventListener('click', () => {
-      const selected = btn.getAttribute('data-filter') || 'All';
-
-      filterBtns.forEach((b) => {
-        b.classList.remove('border-ink', 'bg-ink', 'text-canvas', 'hover:text-canvas');
-        b.classList.add(
-          'border-rule',
-          'bg-canvas-elevated/50',
-          'text-ink-secondary',
-          'hover:border-sage',
-          'hover:text-ink'
-        );
-        b.setAttribute('aria-selected', 'false');
-      });
-      btn.classList.remove(
-        'border-rule',
-        'bg-canvas-elevated/50',
-        'text-ink-secondary',
-        'hover:border-sage',
-        'hover:text-ink'
-      );
-      btn.classList.add('border-ink', 'bg-ink', 'text-canvas', 'hover:text-canvas');
-      btn.setAttribute('aria-selected', 'true');
-
+      const selected = btn.dataset.filter || 'All';
+      filterBtns.forEach((b) => b.setAttribute('aria-pressed', String(b === btn)));
       projectCards.forEach((card) => {
-        const cardCat = card.getAttribute('data-category');
-        if (selected === 'All' || cardCat === selected) {
-          (card as HTMLElement).style.display = '';
-        } else {
-          (card as HTMLElement).style.display = 'none';
-        }
+        card.style.display = selected === 'All' || card.dataset.category === selected ? '' : 'none';
       });
     });
   });
 
-  // 2. One-Click Copy Email
+  // Copy email
   const copyBtn = document.getElementById('copy-email-btn');
   copyBtn?.addEventListener('click', async () => {
-    const email = copyBtn.getAttribute('data-email') || 'thanhdora3605@gmail.com';
     try {
-      await navigator.clipboard.writeText(email);
+      await navigator.clipboard.writeText(EMAIL);
       const original = copyBtn.textContent;
       copyBtn.textContent = 'Copied ✓';
-      copyBtn.classList.add('border-sage', 'text-sage');
-      setTimeout(() => {
-        copyBtn.textContent = original;
-      }, 2200);
+      setTimeout(() => (copyBtn.textContent = original), 2200);
     } catch {
-      window.location.href = `mailto:${email}`;
+      window.location.href = `mailto:${EMAIL}`;
     }
   });
 
-  // 3. Contact Form Handler
-  const contactForm = document.getElementById('atelier-contact-form') as HTMLFormElement | null;
-  const feedbackEl = document.getElementById('form-feedback');
-
-  contactForm?.addEventListener('submit', (e) => {
+  // Contact form → mailto
+  const form = document.getElementById('contact-form') as HTMLFormElement | null;
+  form?.addEventListener('submit', (e) => {
     e.preventDefault();
-    const formData = new FormData(contactForm);
-    const name = String(formData.get('name') || '');
-    const email = String(formData.get('email') || '');
-    const scope = String(formData.get('scope') || '');
-    const message = String(formData.get('message') || '');
-
-    const subject = encodeURIComponent(`[Atelier Inquiry] ${scope} — from ${name}`);
-    const body = encodeURIComponent(
-      `Name: ${name}\nEmail: ${email}\nMandate: ${scope}\n\nBrief:\n${message}`
-    );
-
-    if (feedbackEl) {
-      feedbackEl.textContent = 'Preparing dispatch in your mail client...';
-      feedbackEl.classList.add('text-sage');
-    }
-
-    window.location.href = `mailto:thanhdora3605@gmail.com?subject=${subject}&body=${body}`;
+    const data = new FormData(form);
+    const name = String(data.get('name') || '');
+    const email = String(data.get('email') || '');
+    const message = String(data.get('message') || '');
+    const subject = encodeURIComponent(`Message from ${name} via thanhdora.github.io`);
+    const body = encodeURIComponent(`Name: ${name}\nEmail: ${email}\n\n${message}`);
+    window.location.href = `mailto:${EMAIL}?subject=${subject}&body=${body}`;
   });
 </script>
