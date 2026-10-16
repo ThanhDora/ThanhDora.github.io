@@ -1,0 +1,25 @@
+{
+  "name": "thanhdora-portfolio",
+  "type": "module",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Personal portfolio & engineering journal of Thanh Dora (Lê Thành Đạt) — Quiet Atelier edition",
+  "scripts": {
+    "dev": "astro dev",
+    "start": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "astro": "astro"
+  },
+  "dependencies": {
+    "@astrojs/rss": "^4.0.9",
+    "@astrojs/sitemap": "^3.2.1",
+    "@astrojs/tailwind": "^5.1.2",
+    "astro": "^4.16.18",
+    "tailwindcss": "^3.4.17"
+  },
+  "devDependencies": {
+    "@tailwindcss/typography": "^0.5.15",
+    "typescript": "^5.7.2"
+  }
+}

@@ -1,0 +1,72 @@
+---
+import { PROFILE_DATA } from '../data/profile';
+const currentYear = new Date().getFullYear();
+---
+
+<footer class="border-t border-rule bg-canvas-elevated/40 text-ink-secondary no-print">
+  <div class="mx-auto max-w-6xl px-5 py-14 sm:px-8">
+    <div class="grid grid-cols-1 gap-10 md:grid-cols-12 pb-12 border-b border-rule">
+      <!-- Column 1: Editorial Colophon -->
+      <div class="md:col-span-6 space-y-3">
+        <div class="flex items-center gap-2.5">
+          <span class="inline-block h-2 w-2 rounded-full bg-sage"></span>
+          <span class="font-mono text-xs uppercase tracking-widest text-ink-muted">
+            QUIET ATELIER EDITION • COLOPHON
+          </span>
+        </div>
+        <p class="font-serif text-2xl text-ink">
+          {PROFILE_DATA.identity.name} <span class="italic font-normal text-ink-secondary">({PROFILE_DATA.identity.legalName})</span>
+        </p>
+        <p class="max-w-md text-sm leading-relaxed text-ink-secondary">
+          Set in <span class="text-ink font-medium">Playfair Display</span>, <span class="text-ink font-medium">Manrope</span>, and <span class="text-ink font-medium">JetBrains Mono</span>. Engineered with Astro &amp; Tailwind CSS for near-instant static delivery on GitHub Pages &amp; Cloudflare Edge.
+        </p>
+      </div>
+
+      <!-- Column 2: Directory -->
+      <div class="md:col-span-3 space-y-2.5">
+        <p class="font-mono text-xs uppercase tracking-widest text-ink-muted">Index</p>
+        <ul class="space-y-2 text-sm">
+          <li><a href="/#about" class="editorial-link hover:text-ink">01 / Philosophy</a></li>
+          <li><a href="/#skills" class="editorial-link hover:text-ink">02 / Capabilities</a></li>
+          <li><a href="/#projects" class="editorial-link hover:text-ink">03 / Selected Works</a></li>
+          <li><a href="/blog" class="editorial-link hover:text-ink">05 / Engineering Journal</a></li>
+          <li><a href="/resume" class="editorial-link hover:text-ink">06 / Curriculum Vitae</a></li>
+        </ul>
+      </div>
+
+      <!-- Column 3: Channels -->
+      <div class="md:col-span-3 space-y-2.5">
+        <p class="font-mono text-xs uppercase tracking-widest text-ink-muted">Elsewhere</p>
+        <ul class="space-y-2 text-sm">
+          <li>
+            <a href={PROFILE_DATA.identity.github} target="_blank" rel="noopener noreferrer" class="editorial-link hover:text-ink">
+              GitHub (@ThanhDora) ↗
+            </a>
+          </li>
+          <li>
+            <a href={PROFILE_DATA.identity.linkedin} target="_blank" rel="noopener noreferrer" class="editorial-link hover:text-ink">
+              LinkedIn ↗
+            </a>
+          </li>
+          <li>
+            <a href={`mailto:${PROFILE_DATA.identity.email}`} class="editorial-link hover:text-ink">
+              {PROFILE_DATA.identity.email}
+            </a>
+          </li>
+          <li class="pt-1 font-mono text-xs text-ink-muted">
+            Domain: {PROFILE_DATA.identity.domain}
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="mt-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 font-mono text-xs text-ink-muted">
+      <p>© {currentYear} {PROFILE_DATA.identity.name} ({PROFILE_DATA.identity.legalName}). All rights reserved.</p>
+      <p class="flex items-center gap-3">
+        <span>Press <kbd class="rounded border border-rule px-1.5 py-0.5 text-[10px] text-ink">T</kbd> to switch theme</span>
+        <span>•</span>
+        <a href="#main-content" class="hover:text-sage transition-colors">Back to top ↑</a>
+      </p>
+    </div>
+  </div>
+</footer>

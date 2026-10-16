@@ -1,0 +1,226 @@
+---
+import { PROFILE_DATA } from '../data/profile';
+
+const pathname = Astro.url.pathname;
+const isHome = pathname === '/' || pathname === '';
+
+const navItems = [
+  { label: 'About', href: isHome ? '#about' : '/#about', index: '01' },
+  { label: 'Capabilities', href: isHome ? '#skills' : '/#skills', index: '02' },
+  { label: 'Selected Works', href: isHome ? '#projects' : '/#projects', index: '03' },
+  { label: 'Chronicle', href: isHome ? '#experience' : '/#experience', index: '04' },
+  { label: 'Journal', href: '/blog', index: '05', active: pathname.startsWith('/blog') },
+  { label: 'Resume', href: '/resume', index: '06', active: pathname.startsWith('/resume') },
+];
+---
+
+<header class="sticky top-0 z-40 border-b border-rule bg-canvas/90 backdrop-blur-md transition-colors duration-300 no-print">
+  <div class="mx-auto max-w-6xl px-5 sm:px-8">
+    <div class="flex h-16 items-center justify-between gap-4">
+      <!-- Brand Identity / Monogram -->
+      <a
+        href="/"
+        class="group flex items-baseline gap-3 focus:outline-none"
+        aria-label="Thanh Dora Home"
+      >
+        <span class="font-serif text-xl font-semibold tracking-tight text-ink transition-colors group-hover:text-sage">
+          {PROFILE_DATA.identity.name}
+        </span>
+        <span class="hidden font-mono text-[11px] uppercase tracking-widest text-ink-muted sm:inline-block">
+          / {PROFILE_DATA.identity.legalName}
+        </span>
+      </a>
+
+      <!-- Desktop Navigation -->
+      <nav aria-label="Primary Navigation" class="hidden lg:flex items-center gap-7">
+        {navItems.map((item) => (
+          <a
+            href={item.href}
+            class:list={[
+              'group flex items-baseline gap-1.5 text-sm font-medium transition-colors duration-200',
+              item.active ? 'text-sage font-semibold' : 'text-ink-secondary hover:text-ink',
+            ]}
+          >
+            <span class="font-mono text-[10px] text-ink-muted group-hover:text-sage transition-colors">
+              {item.index}
+            </span>
+            <span class="editorial-link">{item.label}</span>
+          </a>
+        ))}
+      </nav>
+
+      <!-- Right Controls: Live Time + Theme Toggle + Contact CTA -->
+      <div class="flex items-center gap-3">
+        <div
+          class="hidden xl:flex items-center gap-2 border-r border-rule pr-3 font-mono text-[11px] text-ink-muted"
+          title="Local Time in Ha Noi City, Vietnam (UTC+7)"
+        >
+          <span class="h-1.5 w-1.5 rounded-full bg-sage animate-pulse"></span>
+          <span>HAN</span>
+          <span id="atelier-clock">--:--</span>
+        </div>
+
+        <!-- Theme Toggle Button -->
+        <button
+          id="theme-toggle"
+          type="button"
+          class="group relative inline-flex h-9 w-9 items-center justify-center rounded-full border border-rule bg-canvas-elevated/60 text-ink-secondary transition-all duration-200 hover:border-sage hover:text-ink focus:outline-none"
+          aria-label="Toggle dark or light theme (Shortcut: T)"
+          title="Toggle Light / Dark Mode (Press 'T')"
+        >
+          <!-- Sun icon (shown in dark mode) -->
+          <svg
+            class="hidden h-4 w-4 dark:block text-linen transition-transform duration-300 group-hover:rotate-12"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            stroke-width="1.75"
+          >
+            <circle cx="12" cy="12" r="4"></circle>
+            <path stroke-linecap="round" d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32l1.41 1.41M2 12h2m16 0h2M4.93 19.07l1.41-1.41m11.32-11.32l1.41-1.41"></path>
+          </svg>
+          <!-- Moon icon (shown in light mode) -->
+          <svg
+            class="block h-4 w-4 dark:hidden text-charcoal transition-transform duration-300 group-hover:-rotate-12"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            stroke-width="1.75"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"
+            ></path>
+          </svg>
+        </button>
+
+        <!-- Primary Inquiry Button -->
+        <a
+          href={isHome ? '#contact' : '/#contact'}
+          class="hidden sm:inline-flex items-center gap-2 rounded-full border border-ink bg-ink px-4 py-1.5 text-xs font-medium tracking-wide text-canvas transition-all duration-200 hover:bg-sage hover:border-sage"
+        >
+          <span>Inquire</span>
+          <span class="font-mono text-[10px] opacity-80">↗</span>
+        </a>
+
+        <!-- Mobile Menu Button -->
+        <button
+          id="mobile-menu-btn"
+          type="button"
+          class="inline-flex lg:hidden h-9 w-9 items-center justify-center rounded-full border border-rule text-ink-secondary hover:border-sage hover:text-ink"
+          aria-label="Open navigation menu"
+          aria-expanded="false"
+        >
+          <svg id="menu-icon-open" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M4 7h16M4 12h16M4 17h11" />
+          </svg>
+          <svg id="menu-icon-close" class="hidden h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Mobile Navigation Drawer -->
+  <div
+    id="mobile-drawer"
+    class="hidden lg:hidden border-t border-rule bg-canvas px-5 py-6 transition-all"
+  >
+    <div class="flex flex-col space-y-3">
+      {navItems.map((item) => (
+        <a
+          href={item.href}
+          class="mobile-nav-link flex items-center justify-between border-b border-rule/60 pb-2.5 text-base font-medium text-ink hover:text-sage"
+        >
+          <span class="font-serif text-lg">{item.label}</span>
+          <span class="font-mono text-xs text-ink-muted">§ {item.index}</span>
+        </a>
+      ))}
+      <div class="pt-2 flex items-center justify-between">
+        <a
+          href={isHome ? '#contact' : '/#contact'}
+          class="mobile-nav-link inline-flex items-center gap-2 rounded-full bg-ink px-5 py-2 text-xs font-medium text-canvas hover:bg-sage"
+        >
+          <span>Start a Conversation</span>
+          <span>→</span>
+        </a>
+        <span class="font-mono text-[11px] text-ink-muted">{PROFILE_DATA.identity.domain}</span>
+      </div>
+    </div>
+  </div>
+</header>
+
+<script>
+  function setupHeaderInteractions() {
+    const toggleBtn = document.getElementById('theme-toggle');
+    const mobileBtn = document.getElementById('mobile-menu-btn');
+    const mobileDrawer = document.getElementById('mobile-drawer');
+    const openIcon = document.getElementById('menu-icon-open');
+    const closeIcon = document.getElementById('menu-icon-close');
+    const clockEl = document.getElementById('atelier-clock');
+
+    const toggleTheme = () => {
+      const isDark = document.documentElement.classList.toggle('dark');
+      localStorage.setItem('atelier-theme', isDark ? 'dark' : 'light');
+    };
+
+    toggleBtn?.addEventListener('click', toggleTheme);
+
+    // Keyboard shortcut 'T' when not typing in an input/textarea
+    window.addEventListener('keydown', (e) => {
+      const target = e.target as HTMLElement | null;
+      if (
+        target &&
+        (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.isContentEditable)
+      ) {
+        return;
+      }
+      if (e.key === 't' || e.key === 'T') {
+        if (!e.metaKey && !e.ctrlKey && !e.altKey) {
+          toggleTheme();
+        }
+      }
+    });
+
+    // Mobile drawer toggle
+    mobileBtn?.addEventListener('click', () => {
+      const isHidden = mobileDrawer?.classList.toggle('hidden');
+      openIcon?.classList.toggle('hidden', !isHidden);
+      closeIcon?.classList.toggle('hidden', Boolean(isHidden));
+      mobileBtn.setAttribute('aria-expanded', String(!isHidden));
+    });
+
+    document.querySelectorAll('.mobile-nav-link').forEach((link) => {
+      link.addEventListener('click', () => {
+        mobileDrawer?.classList.add('hidden');
+        openIcon?.classList.remove('hidden');
+        closeIcon?.classList.add('hidden');
+      });
+    });
+
+    // Live Vietnam Time (UTC+7)
+    const updateClock = () => {
+      if (!clockEl) return;
+      try {
+        const now = new Date();
+        const formatter = new Intl.DateTimeFormat('en-GB', {
+          timeZone: 'Asia/Ho_Chi_Minh',
+          hour: '2-digit',
+          minute: '2-digit',
+          hour12: false,
+        });
+        clockEl.textContent = `${formatter.format(now)} ICT`;
+      } catch {
+        clockEl.textContent = 'UTC+7';
+      }
+    };
+    updateClock();
+    setInterval(updateClock, 30000);
+  }
+
+  setupHeaderInteractions();
+</script>

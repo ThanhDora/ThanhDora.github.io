@@ -1,0 +1,114 @@
+---
+import '../styles/global.css';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import { PROFILE_DATA } from '../data/profile';
+
+interface Props {
+  title?: string;
+  description?: string;
+  ogImage?: string;
+  canonicalURL?: URL | string;
+}
+
+const {
+  title = `${PROFILE_DATA.identity.name} (${PROFILE_DATA.identity.legalName}) — ${PROFILE_DATA.identity.role}`,
+  description = PROFILE_DATA.identity.tagline,
+  ogImage = '/og-image.svg',
+  canonicalURL = new URL(Astro.url.pathname, Astro.site),
+} = Astro.props;
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Person',
+  name: PROFILE_DATA.identity.name,
+  alternateName: PROFILE_DATA.identity.legalName,
+  jobTitle: PROFILE_DATA.identity.role,
+  url: Astro.site?.toString() || 'https://ThanhDora.github.io',
+  sameAs: [
+    PROFILE_DATA.identity.github,
+    PROFILE_DATA.identity.linkedin,
+    PROFILE_DATA.identity.x,
+  ],
+  knowsAbout: [
+    'Full-Stack Web Development',
+    'Next.js',
+    'Node.js',
+    'Express',
+    'iOS Development',
+    'SwiftUI',
+    'DevOps',
+    'AI Tooling',
+    'Business Operations',
+  ],
+};
+---
+
+<!doctype html>
+<html lang="en" class="scroll-smooth">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="generator" content={Astro.generator} />
+
+    <!-- Primary Meta Tags -->
+    <title>{title}</title>
+    <meta name="title" content={title} />
+    <meta name="description" content={description} />
+    <meta name="author" content={`${PROFILE_DATA.identity.name} (${PROFILE_DATA.identity.legalName})`} />
+    <link rel="canonical" href={canonicalURL} />
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={Astro.url} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={new URL(ogImage, Astro.url)} />
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image" />
+    <meta property="twitter:url" content={Astro.url} />
+    <meta property="twitter:title" content={title} />
+    <meta property="twitter:description" content={description} />
+    <meta property="twitter:image" content={new URL(ogImage, Astro.url)} />
+
+    <!-- Google Fonts: Playfair Display (Serif), Manrope (Sans), JetBrains Mono (Mono) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,400;0,500;1,400&family=Manrope:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Structured Data -->
+    <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+
+    <!-- Immediate Theme Initialization (prevents FOUC) -->
+    <script is:inline>
+      (function () {
+        const stored = localStorage.getItem('atelier-theme');
+        if (stored === 'dark' || (!stored && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+          document.documentElement.classList.add('dark');
+        } else {
+          document.documentElement.classList.remove('dark');
+        }
+      })();
+    </script>
+  </head>
+  <body class="min-h-screen bg-canvas text-ink selection:bg-sage/20 selection:text-ink transition-colors duration-300 relative overflow-x-hidden">
+    <!-- Subtle Tactile Paper Grain Overlay -->
+    <div class="pointer-events-none fixed inset-0 z-50 atelier-grain" aria-hidden="true"></div>
+
+    <!-- Top Architectural Accent Hairline -->
+    <div class="h-[2px] w-full bg-gradient-to-r from-sage/40 via-sage to-sage/40 no-print" aria-hidden="true"></div>
+
+    <Header />
+
+    <main id="main-content" class="relative z-10">
+      <slot />
+    </main>
+
+    <Footer />
+  </body>
+</html>

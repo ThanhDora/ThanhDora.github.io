@@ -1,0 +1,136 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Quiet Atelier — Light Mode (Warm Linen & Charcoal Ink) */
+    --color-canvas: 245 241 235;          /* #F5F1EB Linen */
+    --color-canvas-elevated: 239 233 224; /* #EFE9E0 Warm Alabaster */
+    --color-canvas-subtle: 232 226 217;   /* #E8E2D9 Warm Stone */
+    
+    --color-ink: 28 25 23;                /* #1C1917 Charcoal */
+    --color-ink-secondary: 82 76 70;      /* #524C46 Warm Umber */
+    --color-ink-muted: 138 129 117;       /* #8A8175 Warm Taupe */
+    
+    --color-sage: 95 122 106;             /* #5F7A6A Atelier Sage */
+    --color-sage-deep: 71 94 80;          /* #475E50 Deep Moss */
+    --color-sage-soft: 221 230 224;       /* #DDE6E0 Soft Sage Tint */
+    
+    --color-rule: 218 210 198;            /* #DAD2C6 Hairline Rule */
+    --color-rule-strong: 168 159 145;     /* #A89F91 Warm Taupe Border */
+  }
+
+  html.dark {
+    /* Quiet Atelier — Dark Mode (Nocturnal Studio & Warm Parchment) */
+    --color-canvas: 22 20 18;             /* #161412 Deep Charcoal Obsidian */
+    --color-canvas-elevated: 28 25 23;    /* #1C1917 Charcoal Surface */
+    --color-canvas-subtle: 38 34 31;      /* #26221F Elevated Stone */
+    
+    --color-ink: 245 241 235;             /* #F5F1EB Linen Text */
+    --color-ink-secondary: 196 188 177;   /* #C4BCB1 Warm Parchment */
+    --color-ink-muted: 142 133 122;       /* #8E857A Muted Taupe */
+    
+    --color-sage: 125 158 139;            /* #7D9E8B Luminous Sage */
+    --color-sage-deep: 152 184 165;       /* #98B8A5 Lighter Sage Hover */
+    --color-sage-soft: 36 48 41;          /* #243029 Dark Sage Surface */
+    
+    --color-rule: 46 41 37;               /* #2E2925 Dark Hairline */
+    --color-rule-strong: 74 67 60;        /* #4A433C Emphasized Dark Rule */
+  }
+
+  html {
+    scroll-behavior: smooth;
+    background-color: rgb(var(--color-canvas));
+    color: rgb(var(--color-ink));
+    font-family: 'Manrope', -apple-system, BlinkMacSystemFont, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    selection-background-color: rgb(var(--color-sage));
+  }
+
+  ::selection {
+    background-color: rgb(var(--color-sage) / 0.22);
+    color: rgb(var(--color-ink));
+  }
+}
+
+/* Tactile Paper Grain Overlay */
+.atelier-grain {
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.032'/%3E%3C/svg%3E");
+}
+
+/* Subtle Architectural Grid Pattern */
+.atelier-grid-bg {
+  background-size: 48px 48px;
+  background-image: 
+    linear-gradient(to right, rgb(var(--color-rule) / 0.35) 1px, transparent 1px),
+    linear-gradient(to bottom, rgb(var(--color-rule) / 0.35) 1px, transparent 1px);
+}
+
+/* Staggered Editorial Reveal Animations */
+@keyframes fadeUpQuiet {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-quiet-in {
+  animation: fadeUpQuiet 0.75s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+.delay-100 { animation-delay: 90ms; }
+.delay-200 { animation-delay: 180ms; }
+.delay-300 { animation-delay: 270ms; }
+.delay-400 { animation-delay: 360ms; }
+
+/* Editorial Link Underline Effect */
+.editorial-link {
+  position: relative;
+  display: inline-block;
+}
+
+.editorial-link::after {
+  content: '';
+  position: absolute;
+  width: 100%;
+  transform: scaleX(0);
+  height: 1px;
+  bottom: -2px;
+  left: 0;
+  background-color: rgb(var(--color-sage));
+  transform-origin: bottom right;
+  transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.editorial-link:hover::after {
+  transform: scaleX(1);
+  transform-origin: bottom left;
+}
+
+/* Print optimization for Resume Page */
+@media print {
+  header,
+  footer,
+  .no-print {
+    display: none !important;
+  }
+  body,
+  html {
+    background: #ffffff !important;
+    color: #000000 !important;
+    font-size: 11pt;
+  }
+  .print-container {
+    max-width: 100% !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    border: none !important;
+    box-shadow: none !important;
+  }
+}
