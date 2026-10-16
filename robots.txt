@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://thanhdora.github.io/sitemap-index.xml
