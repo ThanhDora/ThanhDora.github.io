@@ -3,7 +3,7 @@
   "type": "module",
   "version": "1.0.0",
   "private": true,
-  "description": "Personal portfolio & engineering journal of Thanh Dora (Lê Thành Đạt) — Quiet Atelier edition",
+  "description": "Personal portfolio of Lê Thanh Đạt (ThanhDora)",
   "scripts": {
     "dev": "astro dev",
     "start": "astro dev",
@@ -12,9 +12,10 @@
     "astro": "astro"
   },
   "dependencies": {
-    "@astrojs/rss": "^4.0.9",
-    "@astrojs/sitemap": "^3.2.1",
     "@astrojs/tailwind": "^5.1.2",
+    "@fontsource-variable/manrope": "^5.3.0",
+    "@fontsource-variable/playfair-display": "^5.3.0",
+    "@fontsource/jetbrains-mono": "^5.3.0",
     "astro": "^4.16.18",
     "tailwindcss": "^3.4.17"
   },

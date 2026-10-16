@@ -1,3 +1,9 @@
+@import '@fontsource-variable/manrope/wght.css';
+@import '@fontsource-variable/playfair-display/wght.css';
+@import '@fontsource-variable/playfair-display/wght-italic.css';
+@import '@fontsource/jetbrains-mono/400.css';
+@import '@fontsource/jetbrains-mono/500.css';
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -11,10 +17,10 @@
     
     --color-ink: 28 25 23;                /* #1C1917 Charcoal */
     --color-ink-secondary: 82 76 70;      /* #524C46 Warm Umber */
-    --color-ink-muted: 138 129 117;       /* #8A8175 Warm Taupe */
+    --color-ink-muted: 107 99 88;         /* #6B6358 Warm Taupe (≥4.5:1 on canvas) */
     
-    --color-sage: 95 122 106;             /* #5F7A6A Atelier Sage */
-    --color-sage-deep: 71 94 80;          /* #475E50 Deep Moss */
+    --color-sage: 79 107 91;              /* #4F6B5B Atelier Sage (≥4.5:1 on canvas) */
+    --color-sage-deep: 63 87 73;          /* #3F5749 Deep Moss */
     --color-sage-soft: 221 230 224;       /* #DDE6E0 Soft Sage Tint */
     
     --color-rule: 218 210 198;            /* #DAD2C6 Hairline Rule */
@@ -43,7 +49,7 @@
     scroll-behavior: smooth;
     background-color: rgb(var(--color-canvas));
     color: rgb(var(--color-ink));
-    font-family: 'Manrope', -apple-system, BlinkMacSystemFont, sans-serif;
+    font-family: 'Manrope Variable', 'Manrope', -apple-system, BlinkMacSystemFont, sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     selection-background-color: rgb(var(--color-sage));
@@ -114,9 +120,9 @@
 }
 
 /* Active filter button safeguard for mobile touch/hover states */
-.project-filter-btn[aria-selected="true"],
-.project-filter-btn[aria-selected="true"]:hover,
-.project-filter-btn[aria-selected="true"]:focus {
+.project-filter-btn[aria-pressed="true"],
+.project-filter-btn[aria-pressed="true"]:hover,
+.project-filter-btn[aria-pressed="true"]:focus {
   background-color: rgb(var(--color-ink));
   border-color: rgb(var(--color-ink));
   color: rgb(var(--color-canvas));
@@ -142,4 +148,15 @@
     border: none !important;
     box-shadow: none !important;
   }
+}
+
+/* Visible keyboard focus everywhere */
+:focus-visible {
+  outline: 2px solid rgb(var(--color-sage));
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .animate-quiet-in { animation: none; }
 }
