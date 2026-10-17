@@ -69,7 +69,7 @@ const jsonLd = {
           <div><dt class="text-ink-muted">STARTED</dt><dd class="mt-1 text-ink">{formatMonth(project.started)}</dd></div>
           <div><dt class="text-ink-muted">LAST COMMIT</dt><dd class="mt-1 text-ink">{formatDay(project.lastCommit)}</dd></div>
           <div><dt class="text-ink-muted">CATEGORY</dt><dd class="mt-1 text-ink">{project.category}</dd></div>
-          <div><dt class="text-ink-muted">STATUS</dt><dd class="mt-1 text-ink">{project.status ?? (project.liveUrl ? 'Live' : 'Source available')}</dd></div>
+          <div><dt class="text-ink-muted">STATUS</dt><dd class="mt-1 text-ink">{project.status ?? (project.liveUrl ? 'Deployed' : 'Source available')}</dd></div>
         </dl>
 
         <div class="mt-8 flex flex-wrap gap-3">
