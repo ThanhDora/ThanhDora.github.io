@@ -1,17 +1,18 @@
 import type { APIRoute } from 'astro';
+import { PROFILE_DATA } from '../data/profile';
 
 export const GET: APIRoute = async ({ site }) => {
   const baseUrl = site?.toString().replace(/\/$/, '') || 'https://thanhdora.github.io';
 
   // Add '/blog/' here when the journal is re-enabled (see src/pages/_blog/README.md).
-  const staticPages = ['/', '/resume/'];
+  const staticPages = ['/', '/resume/', ...PROFILE_DATA.projects.map((p) => `/projects/${p.id}/`)];
 
   const urls = [
     ...staticPages.map(
       (path) => `  <url>
     <loc>${baseUrl}${path}</loc>
     <changefreq>weekly</changefreq>
-    <priority>${path === '/' ? '1.0' : '0.8'}</priority>
+    <priority>${path === '/' ? '1.0' : path.startsWith('/projects/') ? '0.7' : '0.8'}</priority>
   </url>`
     ),
   ];

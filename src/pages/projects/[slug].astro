@@ -1,0 +1,161 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { PROFILE_DATA, type ProjectItem } from '../../data/profile';
+import { formatMonth, formatDay, projectPath } from '../../lib/format';
+
+export function getStaticPaths() {
+  const list = PROFILE_DATA.projects;
+  return list.map((project, i) => ({
+    params: { slug: project.id },
+    props: {
+      project,
+      index: i,
+      prev: list[(i - 1 + list.length) % list.length],
+      next: list[(i + 1) % list.length],
+    },
+  }));
+}
+
+interface Props {
+  project: ProjectItem;
+  index: number;
+  prev: ProjectItem;
+  next: ProjectItem;
+}
+
+const { project, index, prev, next } = Astro.props;
+const { identity } = PROFILE_DATA;
+const total = PROFILE_DATA.projects.length;
+const strip = (u: string) => u.replace(/^https?:\/\//, '').replace(/\/$/, '');
+const title = `${project.title} — ${project.category} project by ${identity.name}`;
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'SoftwareSourceCode',
+  name: project.title,
+  description: project.summary,
+  codeRepository: project.repoUrl,
+  programmingLanguage: project.stack,
+  dateCreated: project.started,
+  dateModified: project.lastCommit,
+  author: { '@type': 'Person', name: identity.name, url: Astro.site?.toString() },
+  ...(project.liveUrl ? { url: project.liveUrl } : {}),
+};
+---
+
+<BaseLayout title={title} description={project.summary}>
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} slot="head" />
+  <article class="py-12 sm:py-20">
+    <div class="mx-auto max-w-4xl px-5 sm:px-8">
+      <nav aria-label="Breadcrumb" class="font-mono text-xs text-ink-muted">
+        <ol class="flex flex-wrap items-center gap-2">
+          <li><a href="/" class="hover:text-sage">Home</a></li>
+          <li aria-hidden="true">/</li>
+          <li><a href="/#projects" class="hover:text-sage">Projects</a></li>
+          <li aria-hidden="true">/</li>
+          <li aria-current="page" class="text-ink-secondary">{project.title}</li>
+        </ol>
+      </nav>
+
+      <header class="mt-8 border-b border-rule pb-10">
+        <div class="flex flex-wrap items-center gap-3 font-mono text-xs text-ink-muted">
+          <span class="rounded bg-sage/10 px-2 py-0.5 text-sage-deep">{project.category}</span>
+          <span>Project {String(index + 1).padStart(2, '0')} of {String(total).padStart(2, '0')}</span>
+          {project.status && <span class="rounded border border-rule px-2 py-0.5">{project.status}</span>}
+        </div>
+        <h1 class="mt-4 font-serif text-4xl font-medium leading-tight tracking-editorial text-ink sm:text-6xl">{project.title}</h1>
+        <p class="mt-5 max-w-2xl text-base leading-relaxed text-ink-secondary sm:text-lg">{project.summary}</p>
+
+        <dl class="mt-8 grid grid-cols-2 gap-4 font-mono text-xs sm:grid-cols-4">
+          <div><dt class="text-ink-muted">STARTED</dt><dd class="mt-1 text-ink">{formatMonth(project.started)}</dd></div>
+          <div><dt class="text-ink-muted">LAST COMMIT</dt><dd class="mt-1 text-ink">{formatDay(project.lastCommit)}</dd></div>
+          <div><dt class="text-ink-muted">CATEGORY</dt><dd class="mt-1 text-ink">{project.category}</dd></div>
+          <div><dt class="text-ink-muted">STATUS</dt><dd class="mt-1 text-ink">{project.status ?? (project.liveUrl ? 'Live' : 'Source available')}</dd></div>
+        </dl>
+
+        <div class="mt-8 flex flex-wrap gap-3">
+          {project.liveUrl && (
+            <a href={project.liveUrl} target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 rounded-full bg-ink px-6 py-3 text-sm font-medium text-canvas transition-colors hover:bg-sage-deep">
+              Visit live site <span aria-hidden="true">↗</span>
+            </a>
+          )}
+          <a href={project.repoUrl} target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 rounded-full border border-rule-strong px-6 py-3 text-sm font-medium text-ink transition-colors hover:border-sage hover:text-sage">
+            Source on GitHub <span aria-hidden="true">↗</span>
+          </a>
+        </div>
+      </header>
+
+      <div class="grid grid-cols-1 gap-12 py-12 lg:grid-cols-12">
+        <div class="space-y-12 lg:col-span-8">
+          <section aria-labelledby="overview">
+            <h2 id="overview" class="font-mono text-xs uppercase tracking-widest text-sage">Overview</h2>
+            <div class="mt-4 space-y-4 text-base leading-relaxed text-ink-secondary sm:text-lg">
+              {project.overview.map((p) => <p>{p}</p>)}
+            </div>
+            {project.note && (
+              <p class="mt-5 rounded-lg border border-rule bg-canvas-elevated/60 px-4 py-3 text-sm text-ink-secondary">{project.note}</p>
+            )}
+          </section>
+
+          <section aria-labelledby="features">
+            <h2 id="features" class="font-mono text-xs uppercase tracking-widest text-sage">Key features</h2>
+            <ul class="mt-4 space-y-3">
+              {project.features.map((f) => (
+                <li class="flex items-start gap-3 text-base leading-relaxed text-ink-secondary">
+                  <span class="mt-2.5 h-1.5 w-1.5 shrink-0 rounded-full bg-sage" aria-hidden="true"></span><span>{f}</span>
+                </li>
+              ))}
+            </ul>
+          </section>
+
+          <section aria-labelledby="architecture">
+            <h2 id="architecture" class="font-mono text-xs uppercase tracking-widest text-sage">How it works</h2>
+            <ol class="mt-4 space-y-4 border-l border-rule">
+              {project.architecture.map((a, i) => (
+                <li class="relative pl-6 text-base leading-relaxed text-ink-secondary">
+                  <span class="absolute -left-3 top-0.5 flex h-6 w-6 items-center justify-center rounded-full border border-rule bg-canvas font-mono text-xs text-sage-deep" aria-hidden="true">{i + 1}</span>
+                  {a}
+                </li>
+              ))}
+            </ol>
+          </section>
+        </div>
+
+        <aside class="lg:col-span-4">
+          <div class="space-y-8 lg:sticky lg:top-24">
+            <section aria-labelledby="stack">
+              <h2 id="stack" class="font-mono text-xs uppercase tracking-widest text-sage">Tech stack</h2>
+              <ul class="mt-4 flex flex-wrap gap-2">
+                {project.stack.map((t) => (
+                  <li class="rounded border border-rule bg-canvas px-2.5 py-1 font-mono text-xs text-ink-secondary">{t}</li>
+                ))}
+              </ul>
+            </section>
+            <section aria-labelledby="links">
+              <h2 id="links" class="font-mono text-xs uppercase tracking-widest text-sage">Links</h2>
+              <ul class="mt-4 space-y-2 font-mono text-sm">
+                {project.liveUrl && (
+                  <li><span class="text-ink-muted">Live · </span><a href={project.liveUrl} target="_blank" rel="noopener noreferrer" class="break-all text-ink hover:text-sage">{strip(project.liveUrl)}</a></li>
+                )}
+                <li><span class="text-ink-muted">Source · </span><a href={project.repoUrl} target="_blank" rel="noopener noreferrer" class="break-all text-ink hover:text-sage">{strip(project.repoUrl).replace('github.com/', '')}</a></li>
+              </ul>
+            </section>
+          </div>
+        </aside>
+      </div>
+
+      <nav aria-label="More projects" class="grid grid-cols-1 gap-4 border-t border-rule pt-10 sm:grid-cols-2">
+        <a href={projectPath(prev.id)} class="group rounded-xl border border-rule p-5 transition-colors hover:border-sage">
+          <span class="font-mono text-xs text-ink-muted">← Previous project</span>
+          <span class="mt-1 block font-serif text-xl text-ink group-hover:text-sage">{prev.title}</span>
+        </a>
+        <a href={projectPath(next.id)} class="group rounded-xl border border-rule p-5 text-right transition-colors hover:border-sage">
+          <span class="font-mono text-xs text-ink-muted">Next project →</span>
+          <span class="mt-1 block font-serif text-xl text-ink group-hover:text-sage">{next.title}</span>
+        </a>
+      </nav>
+      <p class="mt-8 text-center">
+        <a href="/#projects" class="font-mono text-sm text-ink-secondary hover:text-sage editorial-link">← Back to all projects</a>
+      </p>
+    </div>
+  </article>
+</BaseLayout>

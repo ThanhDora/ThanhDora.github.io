@@ -1,12 +1,9 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { PROFILE_DATA } from '../data/profile';
+import { formatMonth, projectPath } from '../lib/format';
 
 const { identity, hero, skills, projects, experience, education, socials } = PROFILE_DATA;
-const formatMonth = (ym: string) => {
-  const [y, m] = ym.split('-').map(Number);
-  return new Date(Date.UTC(y, m - 1, 1)).toLocaleDateString('en-US', { year: 'numeric', month: 'short', timeZone: 'UTC' });
-};
 let n = 0;
 const num = () => String(++n).padStart(2, '0');
 ---
@@ -92,7 +89,7 @@ const num = () => String(++n).padStart(2, '0');
                 <div class="flex items-center justify-between font-mono text-xs text-ink-muted">
                   <span>{proj.category}</span><span>{formatMonth(proj.started)}</span>
                 </div>
-                <h3 class="mt-1 font-serif text-base font-medium text-ink">{proj.title}</h3>
+                <h3 class="mt-1 font-serif text-base font-medium text-ink"><a href={projectPath(proj.id)} class="hover:text-sage">{proj.title}</a></h3>
                 <p class="mt-1 text-sm text-ink-secondary leading-relaxed">{proj.summary}</p>
                 <p class="mt-2 font-mono text-xs text-sage-deep">{proj.stack.join(', ')}</p>
                 <p class="mt-1 font-mono text-xs text-ink-secondary break-all">
