@@ -159,15 +159,20 @@ export const PROFILE_DATA = {
       repoUrl: 'https://github.com/ThanhDora/TestFlight-Slot-Monitor-Bot',
     },
     {
-      id: 'heartsync',
-      title: 'HeartSync',
-      category: 'iOS',
-      started: '2026-05',
+      id: 'dora-email',
+      title: 'Dora-Email',
+      category: 'Full-Stack Web',
+      started: '2026-08',
       summary:
-        'A SwiftUI couples app with partner profiles, a shared calendar of important dates, AI reply and gift suggestions, and reminders.',
-      highlights: ['Native SwiftUI, organised by feature (Calendar, AI Reply, Onboarding, Settings)'],
-      stack: ['Swift', 'SwiftUI', 'iOS'],
-      repoUrl: 'https://github.com/ThanhDora/HeartSync',
+        'A free temporary (disposable) email web app: pick a domain, get a random or custom address with no sign-up, and read incoming mail in the browser.',
+      highlights: [
+        'Inbox refreshes automatically every few seconds; one-click copy of the address',
+        'Next.js route handlers proxy the domain list and messages from an upstream mail API configured by environment variables',
+        'Deployed on Vercel',
+      ],
+      stack: ['Next.js', 'React', 'TypeScript', 'Vercel'],
+      liveUrl: 'https://dora-email.vercel.app',
+      repoUrl: 'https://github.com/ThanhDora-3605/Dora-Email',
     },
     {
       id: 'dorasuper-bot',
