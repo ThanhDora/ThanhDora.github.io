@@ -108,6 +108,16 @@ const jsonLd = {
         }
       })();
     </script>
+    <!-- Motion: enable before first paint (skipped for reduced motion / no JS) -->
+    <script is:inline>
+      (function () {
+        var d = document.documentElement;
+        if (!window.matchMedia || window.matchMedia('(prefers-reduced-motion: reduce)').matches || !('IntersectionObserver' in window)) return;
+        d.classList.add('motion');
+        // Fail-safe: if the reveal script never runs, show everything.
+        setTimeout(function () { if (!window.__atelierReveal) d.classList.remove('motion'); }, 3000);
+      })();
+    </script>
     <slot name="head" />
   </head>
   <body class="min-h-screen bg-canvas text-ink selection:bg-sage/20 selection:text-ink transition-colors duration-300 relative overflow-x-hidden">
@@ -124,5 +134,54 @@ const jsonLd = {
     </main>
 
     <Footer locale={locale} />
+
+    <script>
+      // Reveal-on-scroll: each element animates once, with a small stagger among
+      // elements that enter together.
+      (window as any).__atelierReveal = true;
+      const root = document.documentElement;
+      if (root.classList.contains('motion')) {
+        const targets = Array.from(
+          document.querySelectorAll<HTMLElement>('[data-reveal], [data-reveal-children] > *')
+        );
+        // After the reveal, hand transitions back to the element's own classes (hover effects).
+        const show = (el: HTMLElement, delay = 0) => {
+          el.style.setProperty('--rd', `${delay}ms`);
+          el.classList.add('is-in');
+          window.setTimeout(() => el.classList.add('is-done'), delay + 750);
+        };
+        const io = new IntersectionObserver(
+          (entries) => {
+            const entering = entries
+              .filter((e) => e.isIntersecting)
+              .map((e) => e.target as HTMLElement)
+              .sort((a, b) => a.getBoundingClientRect().top - b.getBoundingClientRect().top || a.getBoundingClientRect().left - b.getBoundingClientRect().left);
+            entering.forEach((el, i) => {
+              show(el, Math.min(i, 6) * 80);
+              io.unobserve(el);
+            });
+          },
+          { rootMargin: '0px 0px -8% 0px', threshold: 0.08 }
+        );
+        targets.forEach((el) => io.observe(el));
+
+        // Content targeted by #hash (and everything above it) is shown right away.
+        const revealHash = () => {
+          const id = decodeURIComponent(location.hash.slice(1));
+          const target = id && document.getElementById(id);
+          if (!target) return;
+          const top = target.getBoundingClientRect().top;
+          targets.forEach((el) => {
+            if (!el.classList.contains('is-in') && (target.contains(el) || el.getBoundingClientRect().top < top + window.innerHeight)) {
+              show(el);
+              io.unobserve(el);
+            }
+          });
+        };
+        revealHash();
+        window.addEventListener('hashchange', revealHash);
+        window.addEventListener('beforeprint', () => targets.forEach((el) => show(el)));
+      }
+    </script>
   </body>
 </html>

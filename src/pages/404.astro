@@ -19,12 +19,12 @@ const titles = Object.fromEntries(LOCALES.map((l) => [l, fmt(UI[l].meta.notFound
         const home = localizePath('/', l);
         return (
           <div class:list={['nf-block', l !== 'en' && 'hidden']} data-nf={l} lang={LOCALE_META[l].htmlLang} data-title={titles[l]}>
-            <p class="font-mono text-xs uppercase tracking-widest text-sage">{ui.label}</p>
-            <h1 class="mt-4 font-serif text-5xl font-medium text-ink sm:text-6xl">
+            <p data-enter style="--d:0" class="font-mono text-xs uppercase tracking-widest text-sage">{ui.label}</p>
+            <h1 data-enter style="--d:1" class="mt-4 font-serif text-5xl font-medium text-ink sm:text-6xl">
               {ui.headingPrefix}{wordGap(l)}<span class="italic font-normal text-sage">{ui.headingItalic}</span>
             </h1>
-            <p class="mt-4 text-base leading-relaxed text-ink-secondary">{ui.text}</p>
-            <div class="mt-8 flex flex-wrap items-center justify-center gap-4">
+            <p data-enter style="--d:2" class="mt-4 text-base leading-relaxed text-ink-secondary">{ui.text}</p>
+            <div data-enter style="--d:3" class="mt-8 flex flex-wrap items-center justify-center gap-4">
               <a href={home} class="inline-flex items-center gap-2 rounded-full bg-ink px-6 py-3 text-sm font-medium text-canvas transition-colors hover:bg-sage-deep">{ui.backHome}</a>
               <a href={`${home}#projects`} class="inline-flex items-center gap-2 rounded-full border border-rule-strong px-6 py-3 text-sm font-medium text-ink hover:border-sage hover:text-sage">{ui.seeProjects}</a>
             </div>

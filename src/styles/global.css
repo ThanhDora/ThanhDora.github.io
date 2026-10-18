@@ -83,26 +83,41 @@
     linear-gradient(to bottom, rgb(var(--color-rule) / 0.35) 1px, transparent 1px);
 }
 
-/* Staggered Editorial Reveal Animations */
-@keyframes fadeUpQuiet {
-  from {
-    opacity: 0;
-    transform: translateY(14px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+/* ---------------------------------------------------------------------------
+   Motion. Everything is visible by default; the inline script in BaseLayout adds
+   html.motion before first paint only when JS runs and the visitor has not asked
+   for reduced motion. Only opacity/transform/filter animate, so layout never shifts.
+   - [data-enter]           plays once on load (hero, page intro); --d = stagger step
+   - [data-reveal]          fades up when scrolled into view (once)
+   - [data-reveal-children] same, applied to each direct child
+   --------------------------------------------------------------------------- */
+@keyframes atelier-enter {
+  from { opacity: 0; transform: translate3d(0, 18px, 0); filter: blur(6px); }
+  to   { opacity: 1; transform: none; filter: none; }
 }
-
-.animate-quiet-in {
-  animation: fadeUpQuiet 0.75s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+@keyframes atelier-header-in {
+  from { opacity: 0; transform: translate3d(0, -10px, 0); }
+  to   { opacity: 1; transform: none; }
 }
-
-.delay-100 { animation-delay: 90ms; }
-.delay-200 { animation-delay: 180ms; }
-.delay-300 { animation-delay: 270ms; }
-.delay-400 { animation-delay: 360ms; }
+html.motion [data-enter] {
+  animation: atelier-enter 0.8s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-delay: calc(var(--d, 0) * 90ms);
+}
+html.motion [data-enter-header] {
+  animation: atelier-header-in 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+html.motion [data-reveal]:not(.is-done),
+html.motion [data-reveal-children] > *:not(.is-done) {
+  transition:
+    opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+  transition-delay: var(--rd, 0ms);
+}
+html.motion [data-reveal]:not(.is-in),
+html.motion [data-reveal-children] > *:not(.is-in) {
+  opacity: 0;
+  transform: translate3d(0, 20px, 0);
+}
 
 /* Editorial Link Underline Effect */
 .editorial-link {
@@ -167,7 +182,6 @@
 
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
-  .animate-quiet-in { animation: none; }
 }
 
 /* Whole project card is clickable via a stretched title link; other links sit above it (z-10). */
@@ -181,4 +195,10 @@
 .card-link:focus-visible::after {
   outline: 2px solid rgb(var(--color-sage));
   outline-offset: 3px;
+}
+
+@media print {
+  html.motion [data-reveal],
+  html.motion [data-reveal-children] > *,
+  html.motion [data-enter] { opacity: 1 !important; transform: none !important; filter: none !important; animation: none !important; }
 }
