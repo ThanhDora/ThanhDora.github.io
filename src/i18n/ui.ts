@@ -28,11 +28,6 @@ const en = {
     language: 'Language',
     chooseLanguage: 'Choose language',
   },
-  suggest: {
-    text: 'This site is also available in English.',
-    action: 'Switch to English',
-    dismiss: 'Dismiss',
-  },
   home: {
     seeProjects: 'See projects',
     resume: 'Resume',
@@ -170,11 +165,6 @@ const vi: UIStrings = {
     language: 'Ngôn ngữ',
     chooseLanguage: 'Chọn ngôn ngữ',
   },
-  suggest: {
-    text: 'Trang này có phiên bản Tiếng Việt.',
-    action: 'Xem bằng Tiếng Việt',
-    dismiss: 'Đóng',
-  },
   home: {
     seeProjects: 'Xem dự án',
     resume: 'Hồ sơ',
@@ -305,7 +295,6 @@ const zh: UIStrings = {
     language: '语言',
     chooseLanguage: '选择语言',
   },
-  suggest: { text: '本网站提供中文版本。', action: '切换到中文', dismiss: '关闭' },
   home: {
     seeProjects: '查看项目',
     resume: '简历',
@@ -436,7 +425,6 @@ const ja: UIStrings = {
     language: '言語',
     chooseLanguage: '言語を選択',
   },
-  suggest: { text: 'このサイトには日本語版があります。', action: '日本語で見る', dismiss: '閉じる' },
   home: {
     seeProjects: 'プロジェクトを見る',
     resume: '履歴書',
@@ -567,7 +555,6 @@ const ko: UIStrings = {
     language: '언어',
     chooseLanguage: '언어 선택',
   },
-  suggest: { text: '이 사이트는 한국어로도 볼 수 있습니다.', action: '한국어로 보기', dismiss: '닫기' },
   home: {
     seeProjects: '프로젝트 보기',
     resume: '이력서',

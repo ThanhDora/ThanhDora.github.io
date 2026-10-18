@@ -1,7 +1,7 @@
 ---
 import { getProfile } from '../data/localized';
-import { LOCALES, LOCALE_META, NON_DEFAULT_LOCALES, localizePath, type Locale } from '../i18n/config';
-import { t, UI } from '../i18n/ui';
+import { LOCALES, LOCALE_META, localizePath, type Locale } from '../i18n/config';
+import { t } from '../i18n/ui';
 
 interface Props {
   locale: Locale;
@@ -31,10 +31,6 @@ const languages = LOCALES.map((l) => ({
   current: l === locale,
 }));
 
-// Strings for the optional "also available in …" hint on the English home page.
-const suggestions = isHome && locale === 'en'
-  ? Object.fromEntries(NON_DEFAULT_LOCALES.map((l) => [l, { ...UI[l].suggest, href: localizePath('/', l), lang: LOCALE_META[l].htmlLang }]))
-  : null;
 ---
 
 
@@ -237,17 +233,6 @@ const suggestions = isHome && locale === 'en'
   </div>
 </header>
 
-{suggestions && (
-  <div id="lang-suggest" class="hidden border-b border-rule bg-sage-soft/60 no-print" data-suggest={JSON.stringify(suggestions)}>
-    <div class="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-3 px-5 py-2.5 text-sm sm:px-8">
-      <p id="lang-suggest-text" class="text-ink"></p>
-      <div class="flex items-center gap-3">
-        <a id="lang-suggest-go" class="lang-link font-medium text-sage-deep underline underline-offset-4 hover:text-ink" href="/"></a>
-        <button id="lang-suggest-close" type="button" class="rounded-full border border-rule px-3 py-1 text-xs text-ink-secondary hover:border-sage hover:text-ink"></button>
-      </div>
-    </div>
-  </div>
-)}
 
 <script>
   function setupHeaderInteractions() {
@@ -351,37 +336,7 @@ const suggestions = isHome && locale === 'en'
     });
   }
 
-  // Optional, English home only: offer (never force) the visitor's browser language.
-  function setupLanguageSuggestion() {
-    const bar = document.getElementById('lang-suggest');
-    if (!bar) return;
-    let stored: string | null = null;
-    try { stored = localStorage.getItem('lang'); } catch {}
-    if (stored) return;
-    const data = JSON.parse(bar.dataset.suggest || '{}') as Record<string, { text: string; action: string; dismiss: string; href: string; lang: string }>;
-    const prefs = (navigator.languages || [navigator.language]).map((l) => l.toLowerCase().split('-')[0]);
-    const first = prefs[0];
-    if (!first || first === 'en' || !data[first]) return;
-    const s = data[first];
-    const text = document.getElementById('lang-suggest-text')!;
-    const go = document.getElementById('lang-suggest-go') as HTMLAnchorElement;
-    const closeBtn = document.getElementById('lang-suggest-close')!;
-    bar.setAttribute('lang', s.lang);
-    text.textContent = s.text;
-    go.textContent = s.action + ' →';
-    go.href = s.href;
-    go.dataset.lang = first;
-    closeBtn.textContent = s.dismiss;
-    go.addEventListener('click', () => { try { localStorage.setItem('lang', first); } catch {} });
-    closeBtn.addEventListener('click', () => {
-      bar.classList.add('hidden');
-      try { localStorage.setItem('lang', 'en'); } catch {}
-    });
-    bar.classList.remove('hidden');
-  }
-
   setupHeaderInteractions();
   setupLanguageMenu();
   setupLanguageLinks();
-  setupLanguageSuggestion();
 </script>
