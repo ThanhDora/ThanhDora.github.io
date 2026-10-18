@@ -1,20 +1,51 @@
 ---
+// GitHub Pages serves this single /404.html for every missing URL, so it carries
+// all languages and shows the one matching the URL prefix (or the saved choice).
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { PROFILE_DATA } from '../data/profile';
+import { LOCALES, LOCALE_META, localizePath, fmt, wordGap } from '../i18n/config';
+import { UI } from '../i18n/ui';
+
+const name = PROFILE_DATA.identity.name;
+const titles = Object.fromEntries(LOCALES.map((l) => [l, fmt(UI[l].meta.notFoundTitle, { name })]));
 ---
 
-<BaseLayout title={`Page not found — ${PROFILE_DATA.identity.name}`} description="This page does not exist.">
+<BaseLayout locale="en" alternates={false} title={titles.en} description={UI.en.meta.notFoundDescription}>
+  <meta name="robots" content="noindex" slot="head" />
   <section class="py-28 sm:py-36">
     <div class="mx-auto max-w-2xl px-5 text-center sm:px-8">
-      <p class="font-mono text-xs uppercase tracking-widest text-sage">Error 404</p>
-      <h1 class="mt-4 font-serif text-5xl font-medium text-ink sm:text-6xl">
-        Page <span class="italic font-normal text-sage">not found.</span>
-      </h1>
-      <p class="mt-4 text-base leading-relaxed text-ink-secondary">The page you are looking for does not exist or has moved.</p>
-      <div class="mt-8 flex flex-wrap items-center justify-center gap-4">
-        <a href="/" class="inline-flex items-center gap-2 rounded-full bg-ink px-6 py-3 text-sm font-medium text-canvas transition-colors hover:bg-sage-deep">← Back to home</a>
-        <a href="/#projects" class="inline-flex items-center gap-2 rounded-full border border-rule-strong px-6 py-3 text-sm font-medium text-ink hover:border-sage hover:text-sage">See projects</a>
-      </div>
+      {LOCALES.map((l) => {
+        const ui = UI[l].notFound;
+        const home = localizePath('/', l);
+        return (
+          <div class:list={['nf-block', l !== 'en' && 'hidden']} data-nf={l} lang={LOCALE_META[l].htmlLang} data-title={titles[l]}>
+            <p class="font-mono text-xs uppercase tracking-widest text-sage">{ui.label}</p>
+            <h1 class="mt-4 font-serif text-5xl font-medium text-ink sm:text-6xl">
+              {ui.headingPrefix}{wordGap(l)}<span class="italic font-normal text-sage">{ui.headingItalic}</span>
+            </h1>
+            <p class="mt-4 text-base leading-relaxed text-ink-secondary">{ui.text}</p>
+            <div class="mt-8 flex flex-wrap items-center justify-center gap-4">
+              <a href={home} class="inline-flex items-center gap-2 rounded-full bg-ink px-6 py-3 text-sm font-medium text-canvas transition-colors hover:bg-sage-deep">{ui.backHome}</a>
+              <a href={`${home}#projects`} class="inline-flex items-center gap-2 rounded-full border border-rule-strong px-6 py-3 text-sm font-medium text-ink hover:border-sage hover:text-sage">{ui.seeProjects}</a>
+            </div>
+          </div>
+        );
+      })}
+      <script is:inline>
+        (function () {
+          var seg = location.pathname.split('/')[1];
+          var known = ['vi', 'zh', 'ja', 'ko'];
+          var l = known.indexOf(seg) > -1 ? seg : null;
+          if (!l) { try { l = localStorage.getItem('lang'); } catch (e) {} }
+          if (!l || l === 'en' || known.indexOf(l) < 0) return;
+          var el = document.querySelector('[data-nf="' + l + '"]');
+          if (!el) return;
+          document.querySelector('[data-nf="en"]').classList.add('hidden');
+          el.classList.remove('hidden');
+          document.documentElement.lang = el.getAttribute('lang');
+          document.title = el.getAttribute('data-title');
+        })();
+      </script>
     </div>
   </section>
 </BaseLayout>

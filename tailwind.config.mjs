@@ -33,8 +33,8 @@ export default {
         taupe: '#A89F91',
       },
       fontFamily: {
-        serif: ['"Playfair Display Variable"', '"Playfair Display"', 'Georgia', 'Cambria', '"Times New Roman"', 'Times', 'serif'],
-        sans: ['"Manrope Variable"', '"Manrope"', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
+        serif: ['"Playfair Display Variable"', '"Playfair Display"', 'Georgia', 'var(--font-cjk)', 'Cambria', '"Times New Roman"', 'Times', 'serif'],
+        sans: ['"Manrope Variable"', '"Manrope"', '-apple-system', 'BlinkMacSystemFont', 'var(--font-cjk)', 'sans-serif'],
         mono: ['"JetBrains Mono"', 'ui-monospace', 'SFMono-Regular', 'monospace'],
       },
       letterSpacing: {

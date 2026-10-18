@@ -2,23 +2,43 @@
 import '../styles/global.css';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
-import { PROFILE_DATA } from '../data/profile';
+import { getProfile } from '../data/localized';
+import { LOCALES, LOCALE_META, DEFAULT_LOCALE, localizePath, splitPath, type Locale } from '../i18n/config';
+import { t } from '../i18n/ui';
 
 interface Props {
   title?: string;
   description?: string;
   ogImage?: string;
   canonicalURL?: URL | string;
+  /** Defaults to the locale in the URL. */
+  locale?: Locale;
+  /** Emit hreflang alternates (off for the 404 page). */
+  alternates?: boolean;
 }
+
+const fromUrl = splitPath(Astro.url.pathname);
+const locale: Locale = Astro.props.locale ?? fromUrl.locale;
+const route = fromUrl.route;
+const PROFILE_DATA = getProfile(locale);
+const ui = t(locale);
+const meta = LOCALE_META[locale];
 
 const {
   title = `${PROFILE_DATA.identity.name} (@${PROFILE_DATA.identity.handle}) — ${PROFILE_DATA.identity.role}`,
   description = PROFILE_DATA.identity.tagline,
   ogImage = 'https://thanhdora.github.io/og-image.jpg',
   canonicalURL = new URL(Astro.url.pathname, Astro.site),
+  alternates = true,
 } = Astro.props;
 
-const ogImageAlt = 'Digital painting of a dark-haired woman in glasses holding a small glowing moon-like sphere against a starry, golden-lit backdrop';
+const ogImageAlt = ui.meta.ogImageAlt;
+const altLinks = alternates
+  ? [
+      ...LOCALES.map((l) => ({ hreflang: LOCALE_META[l].hreflang, href: new URL(localizePath(route, l), Astro.site).toString() })),
+      { hreflang: 'x-default', href: new URL(localizePath(route, DEFAULT_LOCALE), Astro.site).toString() },
+    ]
+  : [];
 
 const jsonLd = {
   '@context': 'https://schema.org',
@@ -26,7 +46,7 @@ const jsonLd = {
   name: PROFILE_DATA.identity.name,
   alternateName: PROFILE_DATA.identity.handle,
   jobTitle: PROFILE_DATA.identity.role,
-  url: Astro.site?.toString() || 'https://thanhdora.github.io/',
+  url: new URL(localizePath('/', locale), Astro.site).toString(),
   email: `mailto:${PROFILE_DATA.identity.email}`,
   sameAs: PROFILE_DATA.socials.map((s) => s.url),
   knowsAbout: ['Next.js', 'React', 'TypeScript', 'Node.js', 'Express', 'PostgreSQL', 'Swift', 'iOS Development', 'Python', 'Telegram Bots'],
@@ -34,7 +54,7 @@ const jsonLd = {
 ---
 
 <!doctype html>
-<html lang="en" class="scroll-smooth">
+<html lang={meta.htmlLang} class="scroll-smooth">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -47,12 +67,14 @@ const jsonLd = {
     <meta name="description" content={description} />
     <meta name="author" content={PROFILE_DATA.identity.name} />
     <link rel="canonical" href={canonicalURL} />
+    {altLinks.map((a) => <link rel="alternate" hreflang={a.hreflang} href={a.href} />)}
 
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website" />
     <meta property="og:url" content={canonicalURL} />
     <meta property="og:site_name" content={PROFILE_DATA.identity.name} />
-    <meta property="og:locale" content="en_US" />
+    <meta property="og:locale" content={meta.ogLocale} />
+    {alternates && LOCALES.filter((l) => l !== locale).map((l) => <meta property="og:locale:alternate" content={LOCALE_META[l].ogLocale} />)}
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:image" content={new URL(ogImage, Astro.site)} />
@@ -95,12 +117,12 @@ const jsonLd = {
     <!-- Top Architectural Accent Hairline -->
     <div class="h-[2px] w-full bg-gradient-to-r from-sage/40 via-sage to-sage/40 no-print" aria-hidden="true"></div>
 
-    <Header />
+    <Header locale={locale} route={route} />
 
     <main id="main-content" class="relative z-10">
       <slot />
     </main>
 
-    <Footer />
+    <Footer locale={locale} />
   </body>
 </html>

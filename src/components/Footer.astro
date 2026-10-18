@@ -1,7 +1,16 @@
 ---
-import { PROFILE_DATA } from '../data/profile';
+import { getProfile } from '../data/localized';
+import { localizePath, fmt, type Locale } from '../i18n/config';
+import { t } from '../i18n/ui';
+
+interface Props {
+  locale: Locale;
+}
+const { locale } = Astro.props;
+const ui = t(locale);
 const currentYear = new Date().getFullYear();
-const { identity, socials } = PROFILE_DATA;
+const { identity, socials } = getProfile(locale);
+const home = localizePath('/', locale);
 ---
 
 <footer class="border-t border-rule bg-canvas-elevated/40 text-ink-secondary no-print">
@@ -10,24 +19,24 @@ const { identity, socials } = PROFILE_DATA;
       <div class="md:col-span-6 space-y-3">
         <p class="font-serif text-2xl text-ink">{identity.name} <span class="italic font-normal text-ink-secondary">· @{identity.handle}</span></p>
         <p class="max-w-md text-sm leading-relaxed text-ink-secondary">
-          {identity.role} based in {identity.location}. Built with Astro and Tailwind CSS, hosted on GitHub Pages.
+          {fmt(ui.footer.blurb, { role: identity.role, location: identity.location })}
         </p>
       </div>
 
-      <nav class="md:col-span-3 space-y-2.5" aria-label="Footer">
-        <p class="font-mono text-xs uppercase tracking-widest text-ink-muted">Index</p>
+      <nav class="md:col-span-3 space-y-2.5" aria-label={ui.nav.footer}>
+        <p class="font-mono text-xs uppercase tracking-widest text-ink-muted">{ui.footer.index}</p>
         <ul class="space-y-2 text-sm">
-          <li><a href="/#about" class="editorial-link hover:text-ink">01 / About</a></li>
-          <li><a href="/#skills" class="editorial-link hover:text-ink">02 / Skills</a></li>
-          <li><a href="/#projects" class="editorial-link hover:text-ink">03 / Projects</a></li>
-          <li><a href="/#experience" class="editorial-link hover:text-ink">04 / Timeline</a></li>
-          <li><a href="/#contact" class="editorial-link hover:text-ink">05 / Contact</a></li>
-          <li><a href="/resume/" class="editorial-link hover:text-ink">06 / Resume</a></li>
+          <li><a href={`${home}#about`} class="editorial-link hover:text-ink">01 / {ui.nav.about}</a></li>
+          <li><a href={`${home}#skills`} class="editorial-link hover:text-ink">02 / {ui.nav.skills}</a></li>
+          <li><a href={`${home}#projects`} class="editorial-link hover:text-ink">03 / {ui.nav.projects}</a></li>
+          <li><a href={`${home}#experience`} class="editorial-link hover:text-ink">04 / {ui.nav.timeline}</a></li>
+          <li><a href={`${home}#contact`} class="editorial-link hover:text-ink">05 / {ui.nav.contact}</a></li>
+          <li><a href={localizePath('/resume/', locale)} class="editorial-link hover:text-ink">06 / {ui.nav.resume}</a></li>
         </ul>
       </nav>
 
       <div class="md:col-span-3 space-y-2.5">
-        <p class="font-mono text-xs uppercase tracking-widest text-ink-muted">Elsewhere</p>
+        <p class="font-mono text-xs uppercase tracking-widest text-ink-muted">{ui.footer.elsewhere}</p>
         <ul class="space-y-2 text-sm">
           {socials.map((s) => (
             <li><a href={s.url} target="_blank" rel="noopener noreferrer me" class="editorial-link hover:text-ink">{s.label} ({s.handle}) <span aria-hidden="true">↗</span></a></li>
@@ -40,9 +49,9 @@ const { identity, socials } = PROFILE_DATA;
     <div class="mt-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 font-mono text-xs text-ink-muted">
       <p>© {currentYear} {identity.name}</p>
       <p class="flex items-center gap-3">
-        <span class="hidden md:inline">Press <kbd class="rounded border border-rule px-1.5 py-0.5 text-xs text-ink">T</kbd> to switch theme</span>
+        <span class="hidden md:inline">{ui.footer.pressBefore} <kbd class="rounded border border-rule px-1.5 py-0.5 text-xs text-ink">T</kbd> {ui.footer.pressAfter}</span>
         <span class="hidden md:inline" aria-hidden="true">•</span>
-        <a href="#main-content" class="hover:text-sage transition-colors">Back to top ↑</a>
+        <a href="#main-content" class="hover:text-sage transition-colors">{ui.footer.backToTop}</a>
       </p>
     </div>
   </div>

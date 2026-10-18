@@ -1,27 +1,49 @@
 ---
-import { PROFILE_DATA } from '../data/profile';
+import { getProfile } from '../data/localized';
+import { LOCALES, LOCALE_META, NON_DEFAULT_LOCALES, localizePath, type Locale } from '../i18n/config';
+import { t, UI } from '../i18n/ui';
 
-const pathname = Astro.url.pathname;
-const isHome = pathname === '/' || pathname === '';
+interface Props {
+  locale: Locale;
+  route: string;
+}
+const { locale, route } = Astro.props;
+const PROFILE_DATA = getProfile(locale);
+const ui = t(locale);
+const home = localizePath('/', locale);
+const isHome = route === '/';
+const h = (hash: string) => (isHome ? hash : `${home}${hash}`);
 
 const navItems = [
-  { label: 'About', href: isHome ? '#about' : '/#about', index: '01' },
-  { label: 'Skills', href: isHome ? '#skills' : '/#skills', index: '02' },
-  { label: 'Projects', href: isHome ? '#projects' : '/#projects', index: '03' },
-  { label: 'Timeline', href: isHome ? '#experience' : '/#experience', index: '04' },
-  { label: 'Contact', href: isHome ? '#contact' : '/#contact', index: '05' },
-  // Journal is hidden until real posts exist. Re-enable with:
-  // { label: 'Journal', href: '/blog/', index: '06', active: pathname.startsWith('/blog') },
-  { label: 'Resume', href: '/resume/', index: '06', active: pathname.startsWith('/resume') },
+  { label: ui.nav.about, href: h('#about'), index: '01' },
+  { label: ui.nav.skills, href: h('#skills'), index: '02' },
+  { label: ui.nav.projects, href: h('#projects'), index: '03' },
+  { label: ui.nav.timeline, href: h('#experience'), index: '04' },
+  { label: ui.nav.contact, href: h('#contact'), index: '05' },
+  // Journal is hidden until real posts exist (see src/pages/_blog/README.md).
+  { label: ui.nav.resume, href: localizePath('/resume/', locale), index: '06', active: route.startsWith('/resume') },
 ];
+
+const languages = LOCALES.map((l) => ({
+  locale: l,
+  ...LOCALE_META[l],
+  href: localizePath(route, l),
+  current: l === locale,
+}));
+
+// Strings for the optional "also available in …" hint on the English home page.
+const suggestions = isHome && locale === 'en'
+  ? Object.fromEntries(NON_DEFAULT_LOCALES.map((l) => [l, { ...UI[l].suggest, href: localizePath('/', l), lang: LOCALE_META[l].htmlLang }]))
+  : null;
 ---
+
 
 <header class="sticky top-0 z-40 border-b border-rule bg-canvas/90 backdrop-blur-md transition-colors duration-300 no-print">
   <div class="mx-auto max-w-6xl px-5 sm:px-8">
     <div class="flex h-16 items-center justify-between gap-4">
       <!-- Brand Identity / Monogram -->
       <a
-        href="/"
+        href={home}
         class="group flex items-baseline gap-3 whitespace-nowrap"
       >
         <span class="font-serif text-xl font-semibold tracking-tight text-ink transition-colors group-hover:text-sage">
@@ -33,7 +55,7 @@ const navItems = [
       </a>
 
       <!-- Desktop Navigation -->
-      <nav aria-label="Primary" class="hidden lg:flex items-center gap-6">
+      <nav aria-label={ui.nav.primary} class="hidden lg:flex items-center gap-6">
         {navItems.map((item) => (
           <a
             href={item.href}
@@ -50,16 +72,65 @@ const navItems = [
         ))}
       </nav>
 
-      <!-- Right controls: theme toggle + email CTA -->
-      <div class="flex items-center gap-3">
+      <!-- Right controls: language, theme toggle, email CTA -->
+      <div class="flex items-center gap-2 sm:gap-3">
+
+        <!-- Language switcher -->
+        <div class="relative" id="lang-switcher">
+          <button
+            id="lang-btn"
+            type="button"
+            class="inline-flex h-9 items-center gap-1.5 rounded-full border border-rule bg-canvas-elevated/60 px-2.5 text-ink-secondary transition-colors duration-200 hover:border-sage hover:text-ink"
+            aria-haspopup="true"
+            aria-expanded="false"
+            aria-controls="lang-menu"
+            aria-label={`${ui.nav.chooseLanguage}: ${LOCALE_META[locale].label}`}
+          >
+            <svg class="h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75" aria-hidden="true">
+              <circle cx="12" cy="12" r="9"></circle>
+              <path stroke-linecap="round" d="M3 12h18M12 3c2.5 2.7 3.75 5.7 3.75 9S14.5 18.3 12 21M12 3C9.5 5.7 8.25 8.7 8.25 12S9.5 18.3 12 21"></path>
+            </svg>
+            <span class="font-mono text-xs font-medium tracking-wider">{LOCALE_META[locale].code}</span>
+            <svg class="h-3 w-3 transition-transform duration-200" id="lang-caret" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M6 9l6 6 6-6"></path>
+            </svg>
+          </button>
+          <ul
+            id="lang-menu"
+            role="menu"
+            aria-label={ui.nav.language}
+            class="absolute right-0 top-full z-50 mt-2 hidden min-w-[11rem] overflow-hidden rounded-xl border border-rule bg-canvas py-1.5 shadow-lg shadow-ink/5"
+          >
+            {languages.map((l) => (
+              <li role="none">
+                <a
+                  role="menuitem"
+                  href={l.href}
+                  hreflang={l.htmlLang}
+                  lang={l.htmlLang}
+                  data-lang={l.locale}
+                  tabindex="-1"
+                  aria-current={l.current ? 'true' : undefined}
+                  class:list={[
+                    'lang-link flex items-center justify-between gap-4 px-4 py-2 text-sm outline-none transition-colors hover:bg-canvas-elevated focus-visible:bg-canvas-elevated',
+                    l.current ? 'font-semibold text-sage' : 'text-ink',
+                  ]}
+                >
+                  <span>{l.label}</span>
+                  <span class="font-mono text-[11px] text-ink-muted" aria-hidden="true">{l.code}</span>
+                </a>
+              </li>
+            ))}
+          </ul>
+        </div>
 
         <!-- Theme Toggle Button -->
         <button
           id="theme-toggle"
           type="button"
           class="group relative inline-flex h-9 w-9 items-center justify-center rounded-full border border-rule bg-canvas-elevated/60 text-ink-secondary transition-all duration-200 hover:border-sage hover:text-ink"
-          aria-label="Toggle dark mode"
-          title="Toggle Light / Dark Mode (Press 'T')"
+          aria-label={ui.nav.toggleTheme}
+          title={ui.nav.toggleThemeTitle}
         >
           <!-- Sun icon (shown in dark mode) -->
           <svg
@@ -95,7 +166,7 @@ const navItems = [
           href={`mailto:${PROFILE_DATA.identity.email}`}
           class="hidden sm:inline-flex items-center gap-2 whitespace-nowrap rounded-full border border-ink bg-ink px-4 py-1.5 text-xs font-medium tracking-wide text-canvas transition-all duration-200 hover:bg-sage-deep hover:border-sage-deep"
         >
-          <span>Email me</span>
+          <span>{ui.nav.emailMe}</span>
         </a>
 
         <!-- Mobile Menu Button -->
@@ -103,7 +174,7 @@ const navItems = [
           id="mobile-menu-btn"
           type="button"
           class="inline-flex lg:hidden h-9 w-9 items-center justify-center rounded-full border border-rule text-ink-secondary hover:border-sage hover:text-ink"
-          aria-label="Open navigation menu"
+          aria-label={ui.nav.openMenu}
           aria-expanded="false"
         >
           <svg id="menu-icon-open" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75">
@@ -134,17 +205,49 @@ const navItems = [
       ))}
       <div class="pt-2 flex items-center justify-between">
         <a
-          href={isHome ? '#contact' : '/#contact'}
+          href={h('#contact')}
           class="mobile-nav-link inline-flex items-center gap-2 rounded-full bg-ink px-5 py-2 text-xs font-medium text-canvas hover:bg-sage"
         >
-          <span>Get in touch</span>
+          <span>{ui.nav.getInTouch}</span>
           <span>→</span>
         </a>
         <span class="font-mono text-[11px] text-ink-muted">{PROFILE_DATA.identity.domain}</span>
       </div>
+      <nav aria-label={ui.nav.language} class="pt-4">
+        <p class="font-mono text-xs uppercase tracking-widest text-ink-muted">{ui.nav.language}</p>
+        <ul class="mt-3 flex flex-wrap gap-2">
+          {languages.map((l) => (
+            <li>
+              <a
+                href={l.href}
+                hreflang={l.htmlLang}
+                lang={l.htmlLang}
+                data-lang={l.locale}
+                aria-current={l.current ? 'true' : undefined}
+                class:list={[
+                  'lang-link inline-flex items-center rounded-full border px-3 py-1.5 text-sm',
+                  l.current ? 'border-sage text-sage font-semibold' : 'border-rule text-ink hover:border-sage hover:text-sage',
+                ]}
+              >{l.label}</a>
+            </li>
+          ))}
+        </ul>
+      </nav>
     </div>
   </div>
 </header>
+
+{suggestions && (
+  <div id="lang-suggest" class="hidden border-b border-rule bg-sage-soft/60 no-print" data-suggest={JSON.stringify(suggestions)}>
+    <div class="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-3 px-5 py-2.5 text-sm sm:px-8">
+      <p id="lang-suggest-text" class="text-ink"></p>
+      <div class="flex items-center gap-3">
+        <a id="lang-suggest-go" class="lang-link font-medium text-sage-deep underline underline-offset-4 hover:text-ink" href="/"></a>
+        <button id="lang-suggest-close" type="button" class="rounded-full border border-rule px-3 py-1 text-xs text-ink-secondary hover:border-sage hover:text-ink"></button>
+      </div>
+    </div>
+  </div>
+)}
 
 <script>
   function setupHeaderInteractions() {
@@ -194,5 +297,91 @@ const navItems = [
     });
   }
 
+  function setupLanguageMenu() {
+    const btn = document.getElementById('lang-btn');
+    const menu = document.getElementById('lang-menu');
+    const caret = document.getElementById('lang-caret');
+    if (!btn || !menu) return;
+    const items = Array.from(menu.querySelectorAll<HTMLAnchorElement>('[role="menuitem"]'));
+
+    const isOpen = () => btn.getAttribute('aria-expanded') === 'true';
+    const open = (focus: 'current' | 'first' | 'last' | null = 'current') => {
+      menu.classList.remove('hidden');
+      btn.setAttribute('aria-expanded', 'true');
+      caret?.classList.add('rotate-180');
+      if (focus) {
+        const cur = items.findIndex((a) => a.getAttribute('aria-current') === 'true');
+        const idx = focus === 'first' ? 0 : focus === 'last' ? items.length - 1 : Math.max(cur, 0);
+        items[idx]?.focus();
+      }
+    };
+    const close = (returnFocus = false) => {
+      menu.classList.add('hidden');
+      btn.setAttribute('aria-expanded', 'false');
+      caret?.classList.remove('rotate-180');
+      if (returnFocus) btn.focus();
+    };
+
+    btn.addEventListener('click', () => (isOpen() ? close() : open()));
+    btn.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowDown') { e.preventDefault(); open('first'); }
+      else if (e.key === 'ArrowUp') { e.preventDefault(); open('last'); }
+    });
+    menu.addEventListener('keydown', (e) => {
+      const i = items.indexOf(document.activeElement as HTMLAnchorElement);
+      if (e.key === 'ArrowDown') { e.preventDefault(); items[(i + 1) % items.length].focus(); }
+      else if (e.key === 'ArrowUp') { e.preventDefault(); items[(i - 1 + items.length) % items.length].focus(); }
+      else if (e.key === 'Home') { e.preventDefault(); items[0].focus(); }
+      else if (e.key === 'End') { e.preventDefault(); items[items.length - 1].focus(); }
+      else if (e.key === 'Escape') { e.preventDefault(); close(true); }
+      else if (e.key === 'Tab') { close(); }
+    });
+    document.addEventListener('click', (e) => {
+      if (isOpen() && !document.getElementById('lang-switcher')?.contains(e.target as Node)) close();
+    });
+  }
+
+  // Remember the chosen language and keep the current #section when switching.
+  function setupLanguageLinks() {
+    document.querySelectorAll<HTMLAnchorElement>('a.lang-link[data-lang]').forEach((a) => {
+      a.addEventListener('click', () => {
+        try { localStorage.setItem('lang', a.dataset.lang || 'en'); } catch {}
+        if (location.hash && !a.href.includes('#')) a.href += location.hash;
+      });
+    });
+  }
+
+  // Optional, English home only: offer (never force) the visitor's browser language.
+  function setupLanguageSuggestion() {
+    const bar = document.getElementById('lang-suggest');
+    if (!bar) return;
+    let stored: string | null = null;
+    try { stored = localStorage.getItem('lang'); } catch {}
+    if (stored) return;
+    const data = JSON.parse(bar.dataset.suggest || '{}') as Record<string, { text: string; action: string; dismiss: string; href: string; lang: string }>;
+    const prefs = (navigator.languages || [navigator.language]).map((l) => l.toLowerCase().split('-')[0]);
+    const first = prefs[0];
+    if (!first || first === 'en' || !data[first]) return;
+    const s = data[first];
+    const text = document.getElementById('lang-suggest-text')!;
+    const go = document.getElementById('lang-suggest-go') as HTMLAnchorElement;
+    const closeBtn = document.getElementById('lang-suggest-close')!;
+    bar.setAttribute('lang', s.lang);
+    text.textContent = s.text;
+    go.textContent = s.action + ' →';
+    go.href = s.href;
+    go.dataset.lang = first;
+    closeBtn.textContent = s.dismiss;
+    go.addEventListener('click', () => { try { localStorage.setItem('lang', first); } catch {} });
+    closeBtn.addEventListener('click', () => {
+      bar.classList.add('hidden');
+      try { localStorage.setItem('lang', 'en'); } catch {}
+    });
+    bar.classList.remove('hidden');
+  }
+
   setupHeaderInteractions();
+  setupLanguageMenu();
+  setupLanguageLinks();
+  setupLanguageSuggestion();
 </script>

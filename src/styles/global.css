@@ -9,6 +9,15 @@
 @tailwind utilities;
 
 @layer base {
+  /* CJK text falls back to system fonts (no extra downloads). */
+  :root { --font-cjk: system-ui; }
+  :root:lang(zh) { --font-cjk: 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 'Noto Sans CJK SC', 'Noto Sans SC', 'Source Han Sans SC', system-ui; }
+  :root:lang(ja) { --font-cjk: 'Hiragino Sans', 'Hiragino Kaku Gothic ProN', 'Yu Gothic', 'Meiryo', 'Noto Sans CJK JP', 'Noto Sans JP', 'Source Han Sans JP', system-ui; }
+  :root:lang(ko) { --font-cjk: 'Apple SD Gothic Neo', 'Malgun Gothic', 'Noto Sans CJK KR', 'Noto Sans KR', 'Source Han Sans KR', system-ui; }
+  /* Synthetic italics look poor in CJK scripts. */
+  :lang(zh) .italic, :lang(ja) .italic, :lang(ko) .italic { font-style: normal; }
+  :lang(ko) { word-break: keep-all; }
+
   :root {
     /* Quiet Atelier — Light Mode (Warm Linen & Charcoal Ink) */
     --color-canvas: 245 241 235;          /* #F5F1EB Linen */
@@ -49,7 +58,7 @@
     scroll-behavior: smooth;
     background-color: rgb(var(--color-canvas));
     color: rgb(var(--color-ink));
-    font-family: 'Manrope Variable', 'Manrope', -apple-system, BlinkMacSystemFont, sans-serif;
+    font-family: 'Manrope Variable', 'Manrope', -apple-system, BlinkMacSystemFont, var(--font-cjk), sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     selection-background-color: rgb(var(--color-sage));

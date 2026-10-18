@@ -1,0 +1,126 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { getProfile } from '../data/localized';
+import { formatMonth, projectPath } from '../lib/format';
+import { localizePath, fmt, type Locale } from '../i18n/config';
+import { t } from '../i18n/ui';
+
+interface Props {
+  locale: Locale;
+}
+const { locale } = Astro.props;
+const ui = t(locale);
+const cat = (c: string) => ui.categories[c] ?? c;
+const { identity, hero, skills, projects, experience, education, socials } = getProfile(locale);
+const vars = { name: identity.name, handle: identity.handle, role: identity.role };
+let n = 0;
+const num = () => String(++n).padStart(2, '0');
+---
+
+<BaseLayout locale={locale} title={fmt(ui.meta.resumeTitle, vars)} description={fmt(ui.meta.resumeDescription, vars)}>
+  <section class="py-12 sm:py-20">
+    <div class="mx-auto max-w-4xl px-5 sm:px-8 print-container">
+      <div class="mb-8 flex flex-wrap items-center justify-between gap-4 border-b border-rule pb-5 no-print">
+        <a href={localizePath('/', locale)} class="inline-flex items-center gap-2 font-mono text-xs text-ink-muted hover:text-sage"><span aria-hidden="true">←</span><span>{ui.resume.backHome}</span></a>
+        <button id="print-cv-btn" type="button" class="inline-flex items-center gap-2 rounded-full bg-ink px-5 py-2 text-xs font-medium text-canvas transition-colors hover:bg-sage-deep">
+          <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M6 9V2h12v7M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2M6 14h12v8H6v-8z" />
+          </svg>
+          <span>{ui.resume.print}</span>
+        </button>
+      </div>
+
+      <div class="rounded-2xl border border-rule bg-canvas-elevated/40 p-6 sm:p-12 print-container">
+        <header class="border-b border-rule pb-8 flex flex-col sm:flex-row sm:items-end justify-between gap-6">
+          <div>
+            <p class="font-mono text-xs uppercase tracking-widest text-sage">{ui.resume.label}</p>
+            <h1 class="mt-1 font-serif text-4xl font-semibold text-ink">{identity.name}</h1>
+            <p class="mt-1.5 text-base font-medium text-ink-secondary">{identity.role} · @{identity.handle}</p>
+          </div>
+          <div class="font-mono text-xs text-ink-secondary space-y-1 sm:text-right">
+            <p>{identity.location}</p>
+            <p><a href={`mailto:${identity.email}`} class="text-ink hover:text-sage">{identity.email}</a></p>
+            <p><a href={`https://${identity.domain}`} class="hover:text-sage">{identity.domain}</a></p>
+            <p><a href={identity.github} class="hover:text-sage">github.com/{identity.handle}</a></p>
+          </div>
+        </header>
+
+        <section class="py-6 border-b border-rule">
+          <h2 class="font-mono text-xs uppercase tracking-widest text-sage">{num()} / {ui.resume.summary}</h2>
+          <p class="mt-3 text-sm leading-relaxed text-ink-secondary">{hero.lead}</p>
+        </section>
+
+        <section class="py-6 border-b border-rule">
+          <h2 class="font-mono text-xs uppercase tracking-widest text-sage">{num()} / {ui.resume.skills}</h2>
+          <dl class="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2">
+            {skills.map((group) => (
+              <div>
+                <dt class="font-serif text-base font-medium text-ink">{group.category}</dt>
+                <dd class="mt-0.5 text-sm text-ink-secondary">{group.items.join(' · ')}</dd>
+              </div>
+            ))}
+          </dl>
+        </section>
+
+        {experience.length > 0 && (
+          <section class="py-6 border-b border-rule">
+            <h2 class="font-mono text-xs uppercase tracking-widest text-sage">{num()} / {ui.resume.experience}</h2>
+            <div class="mt-5 space-y-5">
+              {experience.map((exp) => (
+                <div>
+                  <div class="flex flex-wrap items-baseline justify-between gap-2">
+                    <h3 class="font-serif text-lg font-medium text-ink">{exp.role} — <span class="italic font-normal text-ink-secondary">{exp.organization}</span></h3>
+                    <span class="font-mono text-xs text-sage">{exp.period}</span>
+                  </div>
+                  <p class="mt-1 text-sm text-ink-secondary">{exp.summary}</p>
+                </div>
+              ))}
+            </div>
+          </section>
+        )}
+
+        {education.length > 0 && (
+          <section class="py-6 border-b border-rule">
+            <h2 class="font-mono text-xs uppercase tracking-widest text-sage">{num()} / {ui.resume.education}</h2>
+            <ul class="mt-4 space-y-2">
+              {education.map((e) => (
+                <li class="text-sm text-ink-secondary"><span class="font-medium text-ink">{e.degree}</span>, {e.school} <span class="font-mono text-xs text-sage">({e.period})</span></li>
+              ))}
+            </ul>
+          </section>
+        )}
+
+        <section class="py-6 border-b border-rule">
+          <h2 class="font-mono text-xs uppercase tracking-widest text-sage">{num()} / {ui.resume.projects}</h2>
+          <div class="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
+            {projects.map((proj) => (
+              <div class="rounded-lg border border-rule/70 bg-canvas/70 p-4">
+                <div class="flex items-center justify-between font-mono text-xs text-ink-muted">
+                  <span>{cat(proj.category)}</span><span>{formatMonth(proj.started, locale)}</span>
+                </div>
+                <h3 class="mt-1 font-serif text-base font-medium text-ink"><a href={projectPath(proj.id, locale)} class="hover:text-sage">{proj.title}</a></h3>
+                <p class="mt-1 text-sm text-ink-secondary leading-relaxed">{proj.summary}</p>
+                <p class="mt-2 font-mono text-xs text-sage-deep">{proj.stack.join(', ')}</p>
+                <p class="mt-1 font-mono text-xs text-ink-secondary break-all">
+                  {proj.liveUrl && <><a href={proj.liveUrl} class="hover:text-sage">{proj.liveUrl.replace(/^https?:\/\//, '').replace(/\/$/, '')}</a> · </>}
+                  <a href={proj.repoUrl} class="hover:text-sage">{proj.repoUrl.replace('https://', '')}</a>
+                </p>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        <section class="pt-6">
+          <h2 class="font-mono text-xs uppercase tracking-widest text-sage">{num()} / {ui.resume.links}</h2>
+          <ul class="mt-3 grid grid-cols-1 gap-1 font-mono text-xs text-ink-secondary sm:grid-cols-2">
+            {socials.map((s) => <li>{s.label}: <a href={s.url} class="text-ink hover:text-sage">{s.handle}</a></li>)}
+          </ul>
+        </section>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<script>
+  document.getElementById('print-cv-btn')?.addEventListener('click', () => window.print());
+</script>
