@@ -69,7 +69,6 @@ export const PROFILE_DATA = {
     domain: 'thanhdora.github.io',
     email: 'ThanhDora3605@gmail.com',
     github: 'https://github.com/ThanhDora',
-    website: 'https://thanhdora.site',
   },
 
   // Socials linked from github.com/ThanhDora (verified via the GitHub API).
@@ -142,7 +141,7 @@ export const PROFILE_DATA = {
         'Local development uses Docker Compose for PostgreSQL, Redis, Mailhog, PgAdmin and Redis Commander; the server has Vitest unit tests and the repo ships a Bruno API collection.',
       ],
       stack: ['Next.js', 'TypeScript', 'Express', 'Prisma', 'PostgreSQL', 'Redis', 'Socket.IO'],
-      liveUrl: 'https://thanhdora.site/',
+      liveUrl: 'https://dora-marketplace.vercel.app/',
       repoUrl: 'https://github.com/ThanhDora/DORA-MARKETPLACE',
     },
     {
