@@ -31,10 +31,10 @@ const num = () => String(++n).padStart(2, '0');
       </div>
 
       <div class="rounded-2xl border border-rule bg-canvas-elevated/40 p-6 sm:p-12 print-container">
-        <header data-enter style="--d:1" class="border-b border-rule pb-8 flex flex-col sm:flex-row sm:items-end justify-between gap-6">
+        <header data-enter style="--d:1" class="border-b border-rule pb-8 print:pb-4 flex flex-col sm:flex-row sm:items-end justify-between gap-6">
           <div>
             <p class="font-mono text-xs uppercase tracking-widest text-sage">{ui.resume.label}</p>
-            <h1 class="mt-1 font-serif text-4xl font-semibold text-ink">{identity.name}</h1>
+            <h1 class="mt-1 font-serif text-4xl print:text-3xl font-semibold text-ink">{identity.name}</h1>
             <p class="mt-1.5 text-base font-medium text-ink-secondary">{identity.role} · @{identity.handle}</p>
           </div>
           <div class="font-mono text-xs text-ink-secondary space-y-1 sm:text-right">
@@ -45,14 +45,14 @@ const num = () => String(++n).padStart(2, '0');
           </div>
         </header>
 
-        <section data-reveal class="py-6 border-b border-rule">
+        <section data-reveal class="py-6 print:py-3.5 border-b border-rule">
           <h2 class="font-mono text-xs uppercase tracking-widest text-sage">{num()} / {ui.resume.summary}</h2>
           <p class="mt-3 text-sm leading-relaxed text-ink-secondary">{hero.lead}</p>
         </section>
 
-        <section data-reveal class="py-6 border-b border-rule">
+        <section data-reveal class="py-6 print:py-3.5 border-b border-rule">
           <h2 class="font-mono text-xs uppercase tracking-widest text-sage">{num()} / {ui.resume.skills}</h2>
-          <dl class="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2">
+          <dl class="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2 print:grid-cols-2">
             {skills.map((group) => (
               <div>
                 <dt class="font-serif text-base font-medium text-ink">{group.category}</dt>
@@ -63,7 +63,7 @@ const num = () => String(++n).padStart(2, '0');
         </section>
 
         {experience.length > 0 && (
-          <section data-reveal class="py-6 border-b border-rule">
+          <section data-reveal class="py-6 print:py-3.5 border-b border-rule">
             <h2 class="font-mono text-xs uppercase tracking-widest text-sage">{num()} / {ui.resume.experience}</h2>
             <div class="mt-5 space-y-5">
               {experience.map((exp) => (
@@ -80,7 +80,7 @@ const num = () => String(++n).padStart(2, '0');
         )}
 
         {education.length > 0 && (
-          <section data-reveal class="py-6 border-b border-rule">
+          <section data-reveal class="py-6 print:py-3.5 border-b border-rule">
             <h2 class="font-mono text-xs uppercase tracking-widest text-sage">{num()} / {ui.resume.education}</h2>
             <ul class="mt-4 space-y-2">
               {education.map((e) => (
@@ -90,18 +90,18 @@ const num = () => String(++n).padStart(2, '0');
           </section>
         )}
 
-        <section data-reveal class="py-6 border-b border-rule">
+        <section data-reveal class="py-6 print:py-3.5 border-b border-rule">
           <h2 class="font-mono text-xs uppercase tracking-widest text-sage">{num()} / {ui.resume.projects}</h2>
-          <div data-reveal-children class="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
+          <div data-reveal-children class="mt-4 grid grid-cols-1 gap-4 print:gap-2.5 sm:grid-cols-2 print:grid-cols-2">
             {projects.map((proj) => (
-              <div class="rounded-lg border border-rule/70 bg-canvas/70 p-4">
+              <div class="print-avoid-break rounded-lg border border-rule/70 bg-canvas/70 p-4 print:p-3">
                 <div class="flex items-center justify-between font-mono text-xs text-ink-muted">
                   <span>{cat(proj.category)}</span><span>{formatMonth(proj.started, locale)}</span>
                 </div>
                 <h3 class="mt-1 font-serif text-base font-medium text-ink"><a href={projectPath(proj.id, locale)} class="hover:text-sage">{proj.title}</a></h3>
-                <p class="mt-1 text-sm text-ink-secondary leading-relaxed">{proj.summary}</p>
-                <p class="mt-2 font-mono text-xs text-sage-deep">{proj.stack.join(', ')}</p>
-                <p class="mt-1 font-mono text-xs text-ink-secondary break-all">
+                <p class="mt-1 text-sm print:text-[8.5pt] text-ink-secondary leading-relaxed print:leading-snug">{proj.summary}</p>
+                <p class="mt-2 print:mt-1 font-mono text-xs print:text-[7.5pt] text-sage-deep">{proj.stack.join(', ')}</p>
+                <p class="mt-1 font-mono text-xs text-ink-secondary break-all print:break-normal print:[overflow-wrap:anywhere] print:text-[7.5pt]">
                   {proj.liveUrl && <><a href={proj.liveUrl} class="hover:text-sage">{proj.liveUrl.replace(/^https?:\/\//, '').replace(/\/$/, '')}</a> · </>}
                   <a href={proj.repoUrl} class="hover:text-sage">{proj.repoUrl.replace('https://', '')}</a>
                 </p>
@@ -110,10 +110,10 @@ const num = () => String(++n).padStart(2, '0');
           </div>
         </section>
 
-        <section data-reveal class="pt-6">
+        <section data-reveal class="pt-6 print:pt-3.5">
           <h2 class="font-mono text-xs uppercase tracking-widest text-sage">{num()} / {ui.resume.links}</h2>
-          <ul class="mt-3 grid grid-cols-1 gap-1 font-mono text-xs text-ink-secondary sm:grid-cols-2">
-            {socials.map((s) => <li>{s.label}: <a href={s.url} class="text-ink hover:text-sage">{s.handle}</a></li>)}
+          <ul class="mt-3 print:mt-2 grid grid-cols-1 gap-1 print:gap-x-6 print:gap-y-0.5 font-mono text-xs print:text-[7.5pt] text-ink-secondary sm:grid-cols-2 print:grid-cols-2">
+            {socials.map((s) => <li><span class="text-ink-muted">{s.label}:</span> <a href={s.url} class="text-ink hover:text-sage">{s.handle}</a><span class="print-only text-ink-muted"> · {s.url.replace(/^https?:\/\/(www\.)?/, '').replace(/\/$/, '')}</span></li>)}
           </ul>
         </section>
       </div>

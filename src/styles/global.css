@@ -153,26 +153,64 @@ html.motion [data-reveal-children] > *:not(.is-in) {
 }
 
 /* Print optimization for Resume Page */
+/* ---------------------------------------------------------------------------
+   Print (mainly the resume): A4, light palette even when dark mode is on,
+   site chrome and decoration hidden, cards kept whole.
+   --------------------------------------------------------------------------- */
+@page {
+  size: A4;
+  margin: 12mm 14mm;
+}
 @media print {
-  header,
-  footer,
-  .no-print {
-    display: none !important;
+  html,
+  html.dark {
+    --color-canvas: 255 255 255;
+    --color-canvas-elevated: 255 255 255;
+    --color-canvas-subtle: 245 245 245;
+    --color-ink: 17 17 17;
+    --color-ink-secondary: 51 51 51;
+    --color-ink-muted: 85 85 85;
+    --color-sage: 47 82 64;
+    --color-sage-deep: 47 82 64;
+    --color-sage-soft: 236 242 238;
+    --color-rule: 210 210 210;
+    --color-rule-strong: 160 160 160;
+    background: #fff !important;
+    color: #111 !important;
+    font-size: 9.5pt;
+    scroll-behavior: auto;
   }
-  body,
-  html {
-    background: #ffffff !important;
-    color: #000000 !important;
-    font-size: 11pt;
+  body {
+    background: #fff !important;
+    min-height: 0 !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
   }
+  /* Site chrome & decoration (only elements marked no-print, so the resume's own <header> stays) */
+  .no-print,
+  .atelier-grain,
+  .atelier-grid-bg { display: none !important; }
+  *, *::before, *::after {
+    box-shadow: none !important;
+    text-shadow: none !important;
+    animation: none !important;
+    transition: none !important;
+  }
+  a { color: inherit !important; text-decoration: none !important; }
   .print-container {
-    max-width: 100% !important;
+    max-width: none !important;
     padding: 0 !important;
     margin: 0 !important;
     border: none !important;
-    box-shadow: none !important;
+    border-radius: 0 !important;
+    background: #fff !important;
   }
+  main > section { padding: 0 !important; }
+  h1, h2, h3 { break-after: avoid; page-break-after: avoid; }
+  .print-avoid-break, li, dl > div { break-inside: avoid; page-break-inside: avoid; }
+  .print-only { display: inline !important; }
 }
+.print-only { display: none; }
 
 /* Visible keyboard focus everywhere */
 :focus-visible {
